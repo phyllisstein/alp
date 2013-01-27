@@ -156,7 +156,7 @@ class Feedback:
 
 class Scraper:
     def __init__(self, url, payload=None, post=False):
-        requests_cache.configure("alpy_requests_cache")
+        requests_cache.configure("pyal_requests_cache")
         if payload:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
         else:
@@ -165,7 +165,7 @@ class Scraper:
 
 class Settings:
     def __init__(self):
-        self._settingsPath = nonvolatile("alpy_settings.json")
+        self._settingsPath = nonvolatile("pyal_settings.json")
         if not os.path.exists(self._settingsPath):
             blank = {}
             with open(self._settingsPath, "w") as f:
