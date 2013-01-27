@@ -11,18 +11,18 @@ from datetime import datetime, timedelta
 
 import os
 import sys
-AlPyPath = os.path.realpath("../")
-if AlPyPath not in sys.path:
-    sys.path.insert(0, AlPyPath)
+PyAlPath = os.path.realpath("../")
+if PyAlPath not in sys.path:
+    sys.path.insert(0, PyAlPath)
 
-from requests import Request
+from PyAl.requests import Request
 try:
-    from requests.hooks import dispatch_hook
+    from PyAl.requests.hooks import dispatch_hook
 except ImportError:
     dispatch_hook = None
 
-from requests_cache import backends
-from requests_cache.compat import str
+from . import backends
+from PyAl.requests_cache.compat import str
 
 
 _original_request_send = Request.send

@@ -8,7 +8,14 @@
     extended to support persistence.
 """
 from datetime import datetime
-import requests
+
+import os
+import sys
+PyAlPath = os.path.realpath("../..")
+if PyAlPath not in sys.path:
+    sys.path.insert(0, PyAlPath)
+
+from PyAl import requests
 
 
 class BaseCache(object):
