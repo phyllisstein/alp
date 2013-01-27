@@ -126,7 +126,7 @@ class Feedback:
 class Scraper:
     def __init__(self, url, payload=None, post=False):
         bundleID = bundle()
-        cacheName = bundleID + "_requests_cache"
+        cacheName = volatile(bundleID + "_requests_cache")
         requests_cache.configure(cacheName)
         if payload:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
@@ -136,7 +136,8 @@ class Scraper:
 
 class Settings:
     def __init__(self):
-        self._settingsPath = nonvolatile("pyal_settings.json")
+        bundleID = bundle()
+        self._settingsPath = nonvolatile(bundleID + ".settings.json")
         if not os.path.exists(self._settingsPath):
             blank = {}
             with open(self._settingsPath, "w") as f:
