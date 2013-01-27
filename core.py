@@ -4,6 +4,7 @@ import plistlib
 import json
 from xml.etree import ElementTree as ET
 from copy import copy
+from bs4 import BeautifulSoup
 import requests
 import requests_cache
 
@@ -122,7 +123,7 @@ class Feedback:
         return ET.tostring(self.myResult)
 
 
-class Scraper:
+class Request:
     def __init__(self, url, payload=None, post=False):
         bundleID = bundle()
         cacheName = volatile(bundleID + "_requests_cache")
