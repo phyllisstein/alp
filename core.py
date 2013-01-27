@@ -4,64 +4,13 @@ import plistlib
 import json
 from xml.etree import ElementTree as ET
 from copy import copy
-import bs4
+from bs4 import BeautifulSoup
 import requests
 import requests_cache
 
 
-bundleID = None
-
-
-def volatile(join=None):
-    global bundleID
-    if bundleID:
-        vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
-    else:
-        infoPath = os.path.realpath("./info.plist")
-        if os.path.exists(infoPath):
-            info = plistlib.readPlist(infoPath)
-            bundle = info["bundleid"]
-            bundleID = bundle
-
-            vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
-        else:
-            raise Exception("Bundle ID not defined or readable from plist.")
-
-    if not os.path.exists(vPath):
-        os.makedirs(vPath)
-
-    if join:
-        vPath = os.path.join(vPath, join)
-
-    return vPath
-
-
-def nonvolatile(join=None):
-    global bundleID
-    if bundleID:
-        nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
-    else:
-        infoPath = os.path.realpath("./info.plist")
-        if os.path.exists(infoPath):
-            info = plistlib.readPlist(infoPath)
-            bundle = info["bundleid"]
-            bundleID = bundle
-
-            nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
-        else:
-            raise Exception("Bundle ID not defined or readable from plist.")
-
-    if not os.path.exists(nvPath):
-        os.makedirs(nvPath)
-
-    if join:
-        nvPath = os.path.join(nvPath, join)
-
-    return nvPath
-
-
 def bundle(newID=None):
-    global bundleID
+    bundleID = None
     if newID:
         bundleID = newID
 
@@ -77,6 +26,34 @@ def bundle(newID=None):
     return bundleID
 
 
+def volatile(join=None):
+    bundleID = bundle()
+    if bundleID:
+        vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
+
+    if not os.path.exists(vPath):
+        os.makedirs(vPath)
+
+    if join:
+        vPath = os.path.join(vPath, join)
+
+    return vPath
+
+
+def nonvolatile(join=None):
+    bundleID = bundle()
+    if bundleID:
+        nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
+
+    if not os.path.exists(nvPath):
+        os.makedirs(nvPath)
+
+    if join:
+        nvPath = os.path.join(nvPath, join)
+
+    return nvPath
+
+
 def find(query):
     output = subprocess.check_output(["mdfind", query])
     returnList = output.split("\n")
@@ -85,15 +62,7 @@ def find(query):
 
 class Feedback:
     def __init__(self):
-        global bundleID
-        if not bundleID:
-            infoPath = os.path.realpath("./info.plist")
-            if os.path.exists(infoPath):
-                info = plistlib.readPlist(infoPath)
-                bundle = info["bundleid"]
-                bundleID = bundle
-            else:
-                raise Exception("Bundle ID not defined or readable from plist.")
+        bundleID = bundle()
 
         self.myResult = ET.Element("items")
         self.defaultData = {
@@ -156,7 +125,9 @@ class Feedback:
 
 class Scraper:
     def __init__(self, url, payload=None, post=False):
-        requests_cache.configure("pyal_requests_cache")
+        bundleID = bundle()
+        cacheName = bundleID + "_requests_cache"
+        requests_cache.configure(cacheName)
         if payload:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
         else:
