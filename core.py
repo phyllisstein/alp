@@ -4,7 +4,6 @@ import plistlib
 import json
 from xml.etree import ElementTree as ET
 from copy import copy
-from bs4 import BeautifulSoup
 import requests
 import requests_cache
 
