@@ -9,20 +9,14 @@
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-import os
-import sys
-PyAlPath = os.path.realpath("../")
-if PyAlPath not in sys.path:
-    sys.path.insert(0, PyAlPath)
-
-from PyAl.requests import Request
+from PyAl.Request.requests import Request
 try:
-    from PyAl.requests.hooks import dispatch_hook
+    from PyAl.Request.requests.hooks import dispatch_hook
 except ImportError:
     dispatch_hook = None
 
-from . import backends
-from PyAl.requests_cache.compat import str
+from PyAl.Request.requests_cache import backends
+from PyAl.Request.requests_cache.compat import str
 
 
 _original_request_send = Request.send

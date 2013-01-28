@@ -16,13 +16,13 @@ registry = {
 
 try:
     # Heroku doesn't allow the SQLite3 module to be installed
-    from .sqlite import DbCache
+    from PyAl.Request.requests_cache.backends.sqlite import DbCache
     registry['sqlite'] = DbCache
 except ImportError:
     DbCache = None
 
 try:
-    from .mongo import MongoCache
+    from PyAl.Request.requests_cache.mongo import MongoCache
     registry['mongo'] = registry['mongodb'] = MongoCache
 except ImportError:
     MongoCache = None

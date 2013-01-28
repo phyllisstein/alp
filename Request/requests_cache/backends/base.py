@@ -9,13 +9,7 @@
 """
 from datetime import datetime
 
-import os
-import sys
-PyAlPath = os.path.realpath("../..")
-if PyAlPath not in sys.path:
-    sys.path.insert(0, PyAlPath)
-
-from PyAl import requests
+from PyAl.Request import requests
 
 
 class BaseCache(object):

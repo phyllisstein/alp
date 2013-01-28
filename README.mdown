@@ -10,7 +10,7 @@ Features
 * A feedback class to which items can be added with a single line of code.
 * A class providing easy access to the OS X Keychain.
 * A simple, cached HTTP request class.
-* Functions to return your bundle ID, the path to your cache folder, and the path to your storage folder.
+* Methods to return your bundle ID, the path to your cache folder, and the path to your storage folder.
 * Spotlight search.
 * A settings class to store and retrieve variables across sessions.
 
@@ -21,7 +21,7 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
 
     import PyAl
 
-### Functions
+### Methods
 * `PyAl.bundle()`
     
     Reads your extension's bundle ID from its info.plist file and returns it.
@@ -51,7 +51,7 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
 
 ### Classes
 #### Feedback
-The `PyAl.Feedback` class simplifies and indeed largely automates the creation of feedback XML for Alfred. Instantiate it with `myFeedback = PyAl.Feedback()` and then use the following functions to add items:
+The `PyAl.Feedback` class simplifies and indeed largely automates the creation of feedback XML for Alfred. Instantiate it with `myFeedback = PyAl.Feedback()` and then use the following methods to add items:
 
 * `Feedback.addValidItem(arg, itemDict[, uid=""])`
 
@@ -64,11 +64,11 @@ The `PyAl.Feedback` class simplifies and indeed largely automates the creation o
 * `Feedback.addInvalidItem(autocomplete, itemDict[, uid=""])`
 
     Adds a non-actionable item to the feedback list which will autocomplete to `autocomplete`. `uid` is again optional.
-    This function also updates the `defaultItem` dictionary described above to generate its XML.
+    This method also updates the `defaultItem` dictionary described above to generate its XML.
 
 * `Feedback.addItem(argsDict, itemDict)`
 
-    A legacy version of the above functions kept where it is in case the feedback XML format changes. This function doesn't
+    A legacy version of the above methods kept where it is in case the feedback XML format changes. This method doesn't
     bother setting any defaults or requiring any information; it simply sets the arguments of `<item>` to the keys and
     values of `argsDict` and the children of `<item>` to the keys and values of `itemDict`. Everything must be specified by
     hand in order to generate XML that Alfred understands.
@@ -90,6 +90,8 @@ The `PyAl.Request` class aims at similar simplification and automation, but this
 
     Checks to see that the request was successful; if not, it raises an exception; if so, it returns a BeautifulSoup object
     for the request's text.
+
+Note that if you do not need to make an HTTP request, you can delete the folder `PyAl/Request` and it will be transparently disabled without affecting the other classes or methods. This is in the interest of maintaining a svelte workflow bundle.
 
 
 ### Settings
