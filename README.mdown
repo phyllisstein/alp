@@ -8,6 +8,7 @@ PyAl is a Python module designed to automate a number of common and repetitive t
 Features
 --------
 * A feedback class to which items can be added with a single line of code.
+* A class providing easy access to the OS X Keychain.
 * A simple, cached HTTP request class.
 * Functions to return your bundle ID, the path to your cache folder, and the path to your storage folder.
 * Spotlight search.
@@ -126,9 +127,11 @@ This class provides a simple interface to the OS X keychain. It is currently abl
 
 * `Keychain.modifyPassword(account, newPassword)`
 
-    Changes the password for the predefined service's `account` to `newPassword`. **Warning:** This is presently the least
-    well-tested method of the bunch. If garbage characters are appended to your new password, as occasionally happened in
-    testing, please [get in touch](https://github.com/phyllisstein/PyAl#help-and-support). More data would be a great boon.
+    Changes the password for the predefined service's `account` to `newPassword`.
+
+* `Keychain.deletePassword(account)`
+
+    Deletes the saved password for the predefined service's `account`.
 
 
 Help and Support
