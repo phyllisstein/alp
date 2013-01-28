@@ -97,7 +97,7 @@ The `PyAl.Request` class aims at similar simplification and automation, but this
 
 * `Settings.set(**kwargs)`
 
-    Taking `kwargs`, which must be a dictionary of key--value pairs, saves the key and value in memory and to a JSON-encoded
+    Taking `kwargs`, which must be a list of `key=value` arguments, saves the key and value in memory and to a JSON-encoded
     settings file in the extension's nonvolatile folder.
 
 * `Settings.get(k[, default=None])`
@@ -110,7 +110,7 @@ The `PyAl.Request` class aims at similar simplification and automation, but this
 
 
 ### Keychain
-This class provides a simple interface to the OS X keychain. It is currently able to store, retrieve, and modify password data. To use it, simply instantiate and use the methods below to manipulate the data.
+This class provides a simple interface to the OS X keychain. It is currently able to store, retrieve, modify, and delete password data. To use it, simply instantiate and use the methods below to manipulate the data.
 
 * `PyAl.Keychain([service=None])`
 

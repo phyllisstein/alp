@@ -13,8 +13,10 @@ def bundle():
     infoPath = os.path.abspath("./info.plist")
     if os.path.exists(infoPath):
         info = plistlib.readPlist(infoPath)
-        bundle = info["bundleid"]
-        bundleID = bundle
+        try:
+            bundleID = info["bundleid"]
+        except KeyError:
+            raise Exception("Bundle ID not defined or readable from plist.")
     else:
         raise Exception("Bundle ID not defined or readable from plist.")
 
@@ -32,8 +34,7 @@ def local(join=None):
 
 def volatile(join=None):
     bundleID = bundle()
-    if bundleID:
-        vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
+    vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
 
     if not os.path.exists(vPath):
         os.makedirs(vPath)
@@ -46,8 +47,7 @@ def volatile(join=None):
 
 def nonvolatile(join=None):
     bundleID = bundle()
-    if bundleID:
-        nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
+    nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
 
     if not os.path.exists(nvPath):
         os.makedirs(nvPath)
@@ -73,12 +73,6 @@ class Feedback:
             "title": "Item",
             "subtitle": bundleID,
             "icon": "icon.png"
-        }
-        self.defaultArgs = {
-            "uid": "",
-            "arg": "",
-            "valid": "no",
-            "autocomplete": bundleID
         }
 
     def addValidItem(self, arg, itemDict, uid=""):
