@@ -2,37 +2,39 @@ from ctypes import *
 from ctypes import util
 from core import *
 
-cf = cdll.LoadLibrary(util.find_library("CoreFoundation"))
 security = cdll.LoadLibrary(util.find_library("Security"))
-cs = cdll.LoadLibrary(util.find_library("CoreServices"))
 
 
 class Keychain:
     def __init__(self, service=None):
         if service:
-            self.service = service
+            self.service = c_char_p(service)
+            self.serviceLen = c_ulong(len(service))
         else:
-            self.service = bundle()
-        self.serviceLen = len(self.service)
+            self.service = c_char_p(bundle())
+            self.serviceLen = c_ulong(len(bundle()))
 
     def storePassword(self, account, password):
-        acctLen = len(account)
-        pwLen = len(password)
+        acctLen = c_ulong(len(account))
+        pwLen = c_ulong(len(password))
+        acctData = c_char_p(account)
+        pwData = c_char_p(password)
         status = security.SecKeychainAddGenericPassword(
                     None,
                     self.serviceLen,
                     self.service,
                     acctLen,
-                    account,
+                    acctData,
                     pwLen,
-                    password,
+                    pwData,
                     None
             )
         return status
 
     def retrievePassword(self, account):
-        acctLen = len(account)
-        pwLen = c_uint()
+        acctLen = c_ulong(len(account))
+        acctData = c_char_p(account)
+        pwLen = c_ulong()
         pwData = c_char_p()
 
         security.SecKeychainFindGenericPassword(
@@ -40,7 +42,7 @@ class Keychain:
                     self.serviceLen,
                     self.service,
                     acctLen,
-                    account,
+                    acctData,
                     byref(pwLen),
                     byref(pwData),
                     None
@@ -49,10 +51,10 @@ class Keychain:
         return pwData.value
 
     def modifyPassword(self, account, newPassword):
-        acctLen = len(account)
-        newPwLen = len(newPassword)
+        acctLen = c_ulong(len(account))
+        newPwLen = c_ulong(len(newPassword))
         itemRef = c_void_p()
-        pwLen = c_uint()
+        pwLen = c_ulong()
         pwData = c_char_p()
         newPwData = c_char_p(newPassword)
 
@@ -71,7 +73,7 @@ class Keychain:
                     itemRef,
                     None,
                     newPwLen,
-                    byref(newPwData)
+                    newPwData
             )
             return modStatus
         else:
