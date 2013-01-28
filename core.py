@@ -9,21 +9,25 @@ import requests
 import requests_cache
 
 
-def bundle(newID=None):
-    bundleID = None
-    if newID:
-        bundleID = newID
-
-    if not bundleID:
-        infoPath = os.path.realpath("./info.plist")
-        if os.path.exists(infoPath):
-            info = plistlib.readPlist(infoPath)
-            bundle = info["bundleid"]
-            bundleID = bundle
-        else:
-            raise Exception("Bundle ID not defined or readable from plist.")
+def bundle():
+    infoPath = os.path.abspath("./info.plist")
+    if os.path.exists(infoPath):
+        info = plistlib.readPlist(infoPath)
+        bundle = info["bundleid"]
+        bundleID = bundle
+    else:
+        raise Exception("Bundle ID not defined or readable from plist.")
 
     return bundleID
+
+
+def local(join=None):
+    localPath = os.path.abspath("./")
+
+    if join:
+        localPath = os.path.join(localPath, join)
+
+    return localPath
 
 
 def volatile(join=None):
@@ -65,57 +69,53 @@ class Feedback:
         bundleID = bundle()
 
         self.myResult = ET.Element("items")
-        self.defaultData = {
+        self.defaultItem = {
             "title": "Item",
             "subtitle": bundleID,
             "icon": "icon.png"
         }
         self.defaultArgs = {
-            "uid": bundleID + ".default",
+            "uid": "",
             "arg": "",
             "valid": "no",
             "autocomplete": bundleID
         }
 
-    def addValidItem(self, uid, arg, dataDict):
+    def addValidItem(self, arg, itemDict, uid=""):
         itemToAdd = ET.SubElement(self.myResult, "item")
 
         args = {"uid": uid, "arg": arg, "valid": "yes", "autocomplete": ""}
         for (k, v) in args.iteritems():
             itemToAdd.set(k, v)
 
-        data = copy(self.defaultData)
-        data.update(dataDict)
+        data = copy(self.defaultItem)
+        data.update(itemDict)
 
         for (k, v) in data.iteritems():
             child = ET.SubElement(itemToAdd, k)
             child.text = v
 
-    def addInvalidItem(self, uid, autocomplete, dataDict):
+    def addInvalidItem(self, autocomplete, itemDict, uid=""):
         itemToAdd = ET.SubElement(self.myResult, "item")
 
         args = {"uid": uid, "arg": "", "valid": "no", "autocomplete": autocomplete}
         for (k, v) in args.iteritems():
             itemToAdd.set(k, v)
 
-        data = copy(self.defaultData)
-        data.update(dataDict)
+        data = copy(self.defaultItem)
+        data.update(itemDict)
 
         for (k, v) in data.iteritems():
             child = ET.SubElement(itemToAdd, k)
             child.text = v
 
-    def addItem(self, argsDict, dataDict):
+    def addItem(self, argsDict, itemDict):
         itemToAdd = ET.SubElement(self.myResult, "item")
 
-        args = copy(self.defaultArgs)
-        args.update(argsDict)
-        for (k, v) in args.iteritems():
+        for (k, v) in argsDict.iteritems():
             itemToAdd.set(k, v)
 
-        data = copy(self.defaultData)
-        data.update(dataDict)
-        for (k, v) in data.iteritems():
+        for (k, v) in itemDict.iteritems():
             child = ET.SubElement(itemToAdd, k)
             child.text = v
 
@@ -132,6 +132,12 @@ class Request:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
         else:
             self.request = requests.get(url)
+
+    def souper(self):
+        if self.request.status_code == requests.codes.ok:
+            return BeautifulSoup(self.request.text)
+        else:
+            self.request.raise_for_status()
 
 
 class Settings:
@@ -154,8 +160,17 @@ class Settings:
         with open(self._settingsPath, "w") as f:
             json.dump(self._loadedSettings, f)
 
-    def get(self, key, default=None):
+    def get(self, k, default=None):
         try:
-            return self._loadedSettings[key]
+            return self._loadedSettings[k]
         except KeyError:
             return default
+
+    def delete(self, k):
+        try:
+            if k in self._loadedSettings.keys():
+                self._loadedSettings.pop(k)
+                with open(self._settingsPath, "w") as f:
+                    json.dump(self._loadedSettings, f)
+        except Exception:
+            pass
