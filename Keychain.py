@@ -18,7 +18,7 @@ class Keychain:
         acctLen = c_ulong(len(account))
         pwLen = c_ulong(len(password))
         acctData = c_char_p(account)
-        pwData = c_char_p(password)
+        pwData = create_string_buffer(password)
         security.SecKeychainAddGenericPassword(
                     None,
                     self.serviceLen,
@@ -33,7 +33,7 @@ class Keychain:
     def retrievePassword(self, account):
         acctLen = c_ulong(len(account))
         acctData = c_char_p(account)
-        pwLen = c_ulong()
+        pwLen = pointer(c_ulong())
         pwData = pointer(c_char_p())
 
         security.SecKeychainFindGenericPassword(
@@ -42,16 +42,17 @@ class Keychain:
                     self.service,
                     acctLen,
                     acctData,
-                    byref(pwLen),
+                    pwLen,
                     pwData,
                     None
             )
 
-        return pwData[0]
+        intendedLen = pwLen.contents.value
+        return pwData.contents.value[0:intendedLen]
 
     def modifyPassword(self, account, newPassword):
         acctLen = c_ulong(len(account))
-        newPwLen = c_ulong(len(newPassword) + 1)
+        newPwLen = c_ulong(len(newPassword))
         itemRef = pointer(c_void_p())
         newPwData = create_string_buffer(newPassword)
 
@@ -73,7 +74,7 @@ class Keychain:
         )
 
     def deletePassword(self, account):
-        acctLen = c_ulong(len(account))
+        acctLen = c_ulong(len(account) + 1)
         itemRef = c_void_p()
         security.SecKeychainFindGenericPassword(
                     None,
