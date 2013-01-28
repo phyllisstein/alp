@@ -104,6 +104,28 @@ The `PyAl.Request` class aims at similar simplification and automation, but this
 
     Removes the setting with key `k` from memory and from the settings JSON file.
 
+### Keychain
+This class provides a simple interface to the OS X keychain. It is currently able to store, retrieve, and modify password data. To use it, simply instantiate and use the methods below to manipulate the data.
+
+* `PyAl.Keychain([service=None])`
+
+    Instantiates a keychain object to access data for the service `service`---or, if nothing is passed for `service`, your
+    extension's bundle ID.
+
+* `Keychain.storePassword(account, password)`
+
+    Stores a `password` for username `account` under the predefined service in the main keychain.
+
+* `Keychain.retrievePassword(account)`
+
+    Returns the password for the predefined service's `account`. Returns `None` if no password is found.
+
+* `Keychain.modifyPassword(account, newPassword)`
+
+    Changes the password for the predefined service's `account` to `newPassword`. **Warning:** This is presently the least
+    well-tested method of the bunch. If garbage characters are appended to your new password, as occasionally happened in
+    testing, please [get in touch](https://github.com/phyllisstein/PyAl#help-and-support). More data would be a great boon.
+
 
 Help and Support
 ----------------
