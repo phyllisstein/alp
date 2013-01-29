@@ -103,7 +103,7 @@ This class makes creating items for feeding back to Alfred ludicrously simple. T
 
 * `PyAl.Item(**kwargs)`
 
-    Given a list of keys and values for `**kwargs`, creates and returns an `Item` suitable for use with the `Feedback`
+    Given a list of keywords and values for `**kwargs`, creates and returns an `Item` suitable for use with the `Feedback`
     class. Currently, the following keywords are understood:
 
     - `title`. A string setting the feedback item's `<title>` tag. Defaults to blank.
