@@ -114,7 +114,7 @@ This class makes creating items for feeding back to Alfred ludicrously simple. T
     - `autocomplete`. A string to which the feedback item will autocomplete on Tab (for valid items) or "Return" (for invalid items). Excluded from item attributes by default.
     - `icon`. A string setting the item's `<icon>` tag. By default, uses the `icon.png` in every workflow.
     - `fileIcon`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a path to a file or folder and use that file or folder's icon. Note the camel case.
-    - `typeIcon`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a UTI (for example, `public.jpeg`) and use the icon assigned to it. Note the camel case.
+    - `fileType`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a UTI (for example, `public.jpeg`) and use the icon assigned to it. Note the camel case.
     - `order`. If this is set to a number the feedback object was initialized with `fixedOrder=True`, an earnest attempt will be made to assign the feedback item to the specified position _among your feedback items_.
 
 However, because this could potentially become cumbersome, the class has a second method to set up a feedback item: `Item.fromDictionary()`:

@@ -100,8 +100,8 @@ class Item:
             self._valid = "no"
         self._autocomplete = kwargs.pop("autocomplete", None)
         self._icon = kwargs.pop("icon", "icon.png")
+        self._fileIcon = kwargs.pop("fileIcon", False)
         self._fileType = kwargs.pop("fileType", False)
-        self._typeIcon = kwargs.pop("typeIcon", False)
         self._order = kwargs.pop("order", None)
         self._arg = kwargs.pop("arg", None)
         if len(kwargs):
@@ -127,7 +127,7 @@ class Item:
         self._autocomplete = dictionary.pop("autocomplete", None)
         self._icon = dictionary.pop("icon", "icon.png")
         self._fileIcon = dictionary.pop("fileIcon", False)
-        self._typeIcon = kwargs.pop("typeIcon", False)
+        self._fileType = kwargs.pop("fileType", False)
         self._order = dictionary.pop("order", None)
         self._arg = dictionary.pop("arg", None)
         if len(dictionary):
