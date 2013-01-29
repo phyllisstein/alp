@@ -8,7 +8,7 @@
 """
 
 
-from .base import BaseCache
+from PyAl.Request.requests_cache.backends.base import BaseCache
 
 registry = {
     'memory': BaseCache,

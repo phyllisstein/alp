@@ -19,7 +19,7 @@ class Feedback:
         if isinstance(items, list):
             self._items.extend(items)
         else:
-            self._items.append(item)
+            self._items.append(items)
 
     def get(self, index=None, search=None):
         if not index and not search:
@@ -131,11 +131,12 @@ class Item:
         self._autocomplete = dictionary.pop("autocomplete", None)
         self._icon = dictionary.pop("icon", "icon.png")
         self._fileIcon = dictionary.pop("fileIcon", False)
-        self._fileType = kwargs.pop("fileType", False)
+        self._fileType = dictionary.pop("fileType", False)
         self._order = dictionary.pop("order", None)
         self._arg = dictionary.pop("arg", None)
         if len(dictionary):
             self._keywords = dictionary
+        return self
 
     def title(self, setTitle=None):
         if setTitle != None:
