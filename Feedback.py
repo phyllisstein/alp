@@ -70,12 +70,16 @@ class Feedback:
                     itemToAdd.set(k, v)
 
             for (k, v) in data["content"].iteritems():
-                child = ET.SubElement(itemToAdd, k)
-                if k == "fileIcon" and v == True:
-                    child.set("type", "fileicon")
-                if k == "fileType" and v == True:
-                    child.set("type", "filetype")
-                child.text = v
+                if k != "fileIcon" and k != "fileType":
+                    child = ET.SubElement(itemToAdd, k)
+                    child.text = v
+                if k == "icon":
+                    if "fileIcon" in data["content"].keys():
+                        if data["content"]["fileIcon"] == True:
+                            child.set("type", "fileicon")
+                    if "fileType" in data["content"].keys():
+                        if data["content"]["fileType"] == True:
+                            child.set("type", "filetype")
 
         return ET.tostring(self._feedback)
 
