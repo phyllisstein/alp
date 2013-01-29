@@ -30,6 +30,11 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
 
     Returns an absolute path to the current file's directory---usually your extension's absolute path.
 
+* `PyAl.timestamp([format=None])`
+
+    Returns a string with an alphabetically-sortable timestamp, or, optionally, a timestamp formatted with the format string
+    passed as `format`.
+
 * `PyAl.volatile([join=None])`
 
     Returns the path to the volatile (cache) folder for your extension, creating the directory if it does
@@ -44,6 +49,17 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
     nonvolatile folder; **however, it does not create this file or folder**. Once you have the joined path, you must
     do something with it.
 
+* `PyAl.readPlist(path)`
+
+    Returns the unpacked root object, usually a dictionary, for the plist file at `path`. If `path` is not an absolute
+    path (for instance, if you just pass a filename), tries to read from a file called `path` in the workflow's nonvolatile
+    folder.
+
+* `PyAl.writePlist(path)`
+
+    Writes an object to the plist file at `path`. If `path` is not an absolute path (for instance, if you just pass a
+    filename), tries to write to a file called `path` in the workflow's nonvolatile folder.
+
 * `PyAl.find(query)`
 
     Returns a list containing the results of a Spotlight search for `query`.
@@ -51,29 +67,104 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
 
 ### Classes
 #### Feedback
-The `PyAl.Feedback` class simplifies and indeed largely automates the creation of feedback XML for Alfred. Instantiate it with `myFeedback = PyAl.Feedback()` and then use the following methods to add items:
+The `PyAl.Feedback` class simplifies and indeed largely automates the creation of feedback XML for Alfred. It has been largely rewritten after PyAl v0.1 to make creating feedback XML even more simple and Pythonic. Note that this has involved splitting the feedback design into two classes, `PyAl.Feedback` and `PyAl.Item`, the latter of which is described below.
 
-* `Feedback.addValidItem(arg, itemDict[, uid=""])`
+* `PyAl.Feedback([items=None[, fixedOrder=False]])`
 
-    Adds an actionable item to the feedback list, with argument `arg` and optional UID `uid`. The variable `itemDict`
-    defines the keys and values that should be included in the item's XML. It will update the `defaultItem` dictionary,
-    which is defined as `{"title": "Item", "subtitle": bundleID, "icon": "icon.png"}`. In practice, the benefit of this
-    is that it is not necessary to specify the default icon in every result to create well-formatted feedback. You could
-    leave the title as "Item" and the subtitle as `bundleID` if you wanted to, but it's not recommended.
+    Initializes the object. `items` can be either a single `Item` or a list of `Item`s, and will initialize the object with
+    it or them already in place. If `fixedOrder` is set to `True`, the Feedback class will attempt to force Alfred to
+    arrange your items in the order that they're created.
 
-* `Feedback.addInvalidItem(autocomplete, itemDict[, uid=""])`
+* `Feedback.add(items)`
 
-    Adds a non-actionable item to the feedback list which will autocomplete to `autocomplete`. `uid` is again optional.
-    This method also updates the `defaultItem` dictionary described above to generate its XML.
+    Adds a single `Item` or a list of `Item`s to the feedback object.
 
-* `Feedback.addItem(argsDict, itemDict)`
+* `Feedback.get([index=None[, search=None]])`
 
-    A legacy version of the above methods kept where it is in case the feedback XML format changes. This method doesn't
-    bother setting any defaults or requiring any information; it simply sets the arguments of `<item>` to the keys and
-    values of `argsDict` and the children of `<item>` to the keys and values of `itemDict`. Everything must be specified by
-    hand in order to generate XML that Alfred understands.
+    If `get()` is called without any arguments, returns the entire list of `Item`s currently stored in the object. Passing
+    `index` will return the `Item` at `index`, and passing a string to `search` will look for `Item`s whose contents match
+    the string and return any matches.
+
+* `Feedback.pop([index=None[, search=None]])`
+
+    Behaves just like `get()`, but removes the `Item`s it finds from the object's list. Useful if you want to modify an
+    `Item` without generating duplicates.
+
+* `Feedback.list(item, length)`
+
+    Populates the object with `length` copies of the given `item`. **Caveat User:** It's not yet clear whether
+    this will be of any use.
 
 To return your feedback to Alfred, just pass your instance to `print` and he'll get the message.
+
+
+### Item
+This class makes creating items for feeding back to Alfred ludicrously simple. There are two ways to generate feedback items with this class. The first is to simply initialize it, passing values for the arguments you intend to use:
+
+* `PyAl.Item(**kwargs)`
+
+    Given a list of keys and values for `**kwargs`, creates and returns an `Item` suitable for use with the `Feedback`
+    class. Currently, the following keywords are understood:
+
+    - `title`. A string setting the feedback item's `<title>` tag. Defaults to blank.
+    - `subtitle`. A string setting the feedback item's `<subtitle>` tag. Defaults to blank.
+    - `uid`. A string setting the feedback item's UID attribute. The bundle's ID will automatically be prepended. Defaults to the bundle ID.
+    - `valid`. Sets the feedback item's "valid" attribute. Can be `True`, `False`, or a string (use `"yes"` or `"no"`).
+    - `arg`. A string setting the feedback item's argument attribute, to be passed to the next stage of the workflow for valid items. Excluded from item attributes by default.
+    - `autocomplete`. A string to which the feedback item will autocomplete on Tab (for valid items) or "Return" (for invalid items). Excluded from item attributes by default.
+    - `icon`. A string setting the item's `<icon>` tag. By default, uses the `icon.png` in every workflow.
+    - `fileIcon`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a path to a file or folder and use that file or folder's icon. Note the camel case.
+    - `typeIcon`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a UTI (for example, `public.jpeg`) and use the icon assigned to it. Note the camel case.
+    - `order`. If this is set to a number the feedback object was initialized with `fixedOrder=True`, an earnest attempt will be made to assign the feedback item to the specified position _among your feedback items_.
+
+However, because this could potentially become cumbersome, the class has a second method to set up a feedback item: `Item.fromDictionary()`:
+
+* `Item.fromDictionary(dictionary)`
+
+    Behaves precisely like the initialization method. All of the keywords understood by `PyAl.Item()` can be used as
+    keys in a dict whose values will be passed to the `Item` instance. Particularly useful when processing results in bulk:
+    simply parse your results as a dictionary with some or all of the keys above and the values you intend to use.
+
+`fromDictionary()` could be especially useful for quickly creating many items in a row: just set up a default dictionary in your code, change its values as needed, and keep passing it to the method.
+
+Since creating many items in a row is a common task with Alfred feedback, this class has another method to simplify the process:
+
+* `Item.copy()`
+
+    Returns a copy of the instance of `Item`, which can then be modified as needed and passed back to a `Feedback` object.
+
+There are also accessor methods to modify or check an `Item` instance's values. Except for `Item.icon()`, each takes one optional argument, which should be set to the intended value; if no argument is passed, each returns the current value for the variable.
+
+* `Item.title([setTitle=None])`
+* `Item.subtitle([setSubtitle=None])`
+* `Item.uid([setUID=None])`
+* `Item.valid([setValid=None])`
+* `Item.autocomplete([setAutocomplete=None])`
+* `Item.order([setOrder=None])`
+
+The accessor method for the icon is similar, but takes two additional optional arguments: `fileIcon` and `fileType`. Setting either of these to `True` will cause Alfred to treat the icon value as a file from which to extract an icon or a UTI whose icon he should use.
+
+* `Item.icon([setIcon=None[, fileIcon=False[, fileType=False]]])`
+
+Finally, to get the entire contents of an `Item`, use the `Item.get()` method. It returns a dictionary formatted as follows:
+
+    {
+        "content":
+        {
+            "title": self._title,
+            "subtitle": self._subtitle,
+            "icon": self._icon,
+            "fileIcon": self._fileIcon,
+            "fileType": self._fileType
+        }
+        "attrib":
+        {
+            "uid": self._uid,
+            "valid": self._valid
+        }
+    }
+
+The `"attrib"` dictionary may also contain keys for `"autocomplete"` and `"arg"`, if set, and the root object may contain a key for `"order"`, if set. All of this is mostly useful for the internal interaction between `Item`s and `Feedback`s, but could have other uses as well.
 
 
 ### Request
