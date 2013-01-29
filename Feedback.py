@@ -11,7 +11,7 @@ class Feedback:
             if isinstance(items, list):
                 self._items = items
             else:
-                self._items = [item]
+                self._items = [items]
         else:
             self._items = []
 
