@@ -1,3 +1,4 @@
+import time
 import subprocess
 import os
 import plistlib
@@ -27,6 +28,13 @@ def local(join=None):
         localPath = os.path.join(localPath, join)
 
     return localPath
+
+
+def timestamp(format=None):
+    if format:
+        return time.strftime(format)
+    else:
+        return time.strftime("%Y-%m-%d-%H%M%S%Z")
 
 
 def volatile(join=None):
