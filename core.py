@@ -1,3 +1,4 @@
+import json
 import time
 import subprocess
 import os
@@ -72,6 +73,29 @@ def writePlist(obj, path):
         plistlib.writePlist(obj, path)
     else:
         plistlib.writePlist(obj, nonvolatile(path))
+
+
+def jsonLoad(path):
+    if not os.path.isabs(path):
+        path = nonvolatile(path)
+
+    if os.path.exists(path):
+        with open(path) as f:
+            read = json.load(f)
+        return read
+    else:
+        blank = {}
+        with open(path, "w") as f:
+            json.dump(blank, f)
+        return blank
+
+
+def jsonDump(obj, path):
+    if not os.path.isabs(path):
+        path = nonvolatile(path)
+
+    with open(path) as f:
+        json.dump(obj, f)
 
 
 def find(query):

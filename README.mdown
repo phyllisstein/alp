@@ -55,9 +55,20 @@ To start using PyAl, simply paste the PyAl folder into your workflow's folder an
     path (for instance, if you just pass a filename), tries to read from a file called `path` in the workflow's nonvolatile
     folder.
 
-* `PyAl.writePlist(path)`
+* `PyAl.writePlist(obj, path)`
 
     Writes an object to the plist file at `path`. If `path` is not an absolute path (for instance, if you just pass a
+    filename), tries to write to a file called `path` in the workflow's nonvolatile folder.
+
+* `PyAl.jsonLoad(path)`
+
+    Returns the dictionary created by loading the JSON file at `path`. If `path` is not an absolute path (for instance, if
+    you just pass a filename), tries to read from a file called `path` in the workflow's nonvolatile folder. If `path` does
+    not exist, it is created with an empty dictionary which is then returned.
+
+* `PyAl.jsonDump(obj, path)`
+
+    Writes the object `obj` to the JSON file at `path`. If `path` is not an absolute path (for instance, if you just pass a
     filename), tries to write to a file called `path` in the workflow's nonvolatile folder.
 
 * `PyAl.find(query)`
