@@ -108,6 +108,7 @@ class Item:
         self._fileType = kwargs.pop("fileType", False)
         self._order = kwargs.pop("order", None)
         self._arg = kwargs.pop("arg", None)
+        self._type = kwargs.pop("type", None)
         if len(kwargs):
             self._keywords = kwargs
 
@@ -134,6 +135,7 @@ class Item:
         self._fileType = dictionary.pop("fileType", False)
         self._order = dictionary.pop("order", None)
         self._arg = dictionary.pop("arg", None)
+        self._type = dictionary.pop("type", None)
         if len(dictionary):
             self._keywords = dictionary
         return self
@@ -187,6 +189,12 @@ class Item:
         else:
             return self._order
 
+    def type(self, setType=None):
+        if setType != None:
+            self._type = setType
+        else:
+            return self._type
+
     def copy(self):
         return copy.copy(self)
 
@@ -206,6 +214,8 @@ class Item:
             attrib["autocomplete"] = self._autocomplete
         if self._arg:
             attrib["arg"] = self._arg
+        if self._type:
+            attrib["type"] = self._type
 
         data = {"attrib": attrib, "content": content}
         if self._order != None:
