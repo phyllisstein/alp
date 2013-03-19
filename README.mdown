@@ -36,7 +36,7 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
 ## Feedback System
 alp uses a robust and complete implementation of Alfred's feedback system, generating and outputting the required XML for the attributes you specify. This breaks down into a class called `item` and a function called `feedback`.
 
-* **`alp.item(\*\*kwargs)`**  
+* **`alp.item(**kwargs)`**  
     The `item` class is initialized with a list of keys and values, and returns one `item` which can then be passed to the `feedback` function. The following keys are currently understood by alp and Alfred:
 
     + `title`: The title string to show in the feedback list.
@@ -90,7 +90,7 @@ The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_ca
 ## Settings Interface
 The alp `settings` object loads and saves settings in your workflow's designated storage path. On initialization, it looks for a settings file, creating it if it fails to find one and loading the predefined settings if it succeeds. It also defines the following methods:
 
-* **`settings.set(\*\*kwargs)`**  
+* **`settings.set(**kwargs)`**  
     Load the key--value pairs defined in `\*\*kwargs` into memory and saves them to the settings file.
 * **`settings.get(k, default=None)`**  
     Searches the loaded settings for key `k`, optionally returning `default` if no setting is found.
