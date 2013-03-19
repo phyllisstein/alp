@@ -7,6 +7,7 @@ import os
 import sys
 import plistlib
 import unicodedata
+import codecs
 
 
 def bundle():
@@ -96,12 +97,12 @@ def jsonLoad(path):
         path = storage(path)
 
     if os.path.exists(path):
-        with open(path) as f:
+        with codecs.open(path, "r", "utf-8") as f:
             read = json.load(f)
         return read
     else:
         blank = {}
-        with open(path, "w") as f:
+        with codecs.open(path, "w", "utf-8") as f:
             json.dump(blank, f)
         return blank
 
@@ -110,7 +111,7 @@ def jsonDump(obj, path):
     if not os.path.isabs(path):
         path = storage(path)
 
-    with open(path) as f:
+    with codecs.open(path, "w", "utf-8") as f:
         json.dump(obj, f)
 
 
@@ -121,3 +122,8 @@ def find(query):
     if returnList[-1] == "":
         returnList = returnList[:-1]
     return returnList
+
+def log(s):
+    log_text = "[%s: %s (%s)]" % (bundle(), s, timestamp())
+    with codecs.open(local("debug.log"), "w", "utf-8") as f:
+        f.write(decode(log_text))

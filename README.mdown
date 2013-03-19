@@ -8,6 +8,7 @@ alp's primary features include:
 * A class to simplify generating [feedback XML](http://www.alfredforum.com/topic/5-generating-feedback-in-workflows/) for Alfred.
 * A class to simplify saving and retrieving settings.
 * A class to interface with the OS X Keychain.
+* A class to send notifications to Mac OS X 10.8's Notification Center.
 * Several bundled modules for working with HTTP requests.
 
 However, you can pick and choose from among these by deleting any of the files in the module (except for `core.py`); if something is missing, alp will silently ignore it.
@@ -36,7 +37,7 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
 ## Feedback System
 alp uses a robust and complete implementation of Alfred's feedback system, generating and outputting the required XML for the attributes you specify. This breaks down into a class called `item` and a function called `feedback`.
 
-* `alp.item(* *kwargs)`  
+* `alp.item(**kwargs)`  
     The `item` class is initialized with a list of keys and values, and returns one `item` which can then be passed to the `feedback` function. The following keys are currently understood by alp and Alfred:
 
     + `title`: The title string to show in the feedback list.
@@ -78,6 +79,16 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
     Takes either an individual item or a list of items for `items` and prints a UTF-8-encoded XML string for Alfred to interpret.
 
 
+## Notifications
+The fact that Alfred's internal workflow workings only make it possible for a workflow to output one string can be frustrating. Enter alp's `notification` class. It's used a little something like this:
+
+    >>> import alp
+    >>> n = alp.notification()
+    >>> n.notify("Title", "Subtitle", "Informative Text")
+
+The title, subtitle, and informative text should be strings. This will pop up a notification that bears Python's logo but is otherwise indistinguishable from any of Alfred's notices. Currently, this is restricted to sending messages to the user---there's not yet a way to know whether the user clicks the notification, for example---but the problem is being worked on.
+
+
 ## HTTP Requests
 The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_cache](https://readthedocs.org/projects/requests-cache/), and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) are bundled with alp by default. (N.B.: Because they are relatively large, they can be removed from the module by deleting the folder `request`.) They vastly simplify making and interpreting HTTP requests. The alp `request` class provides a quick-and-dirty interface to them, setting up a requests cache, making a request, and passing the returned data to BeautifulSoup for parsing.
 
@@ -90,8 +101,8 @@ The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_ca
 ## Settings Interface
 The alp `settings` object loads and saves settings in your workflow's designated storage path. On initialization, it looks for a settings file, creating it if it fails to find one and loading the predefined settings if it succeeds. It also defines the following methods:
 
-* `settings.set(* *kwargs)`  
-    Load the key--value pairs defined in `\*\*kwargs` into memory and saves them to the settings file.
+* `settings.set(**kwargs)`  
+    Load the key--value pairs defined in `**kwargs` into memory and saves them to the settings file.
 * `settings.get(k, default=None)`  
     Searches the loaded settings for key `k`, optionally returning `default` if no setting is found.
 * `settings.delete(k)`  
