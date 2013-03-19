@@ -9,6 +9,7 @@ alp's primary features include:
 * A class to simplify saving and retrieving settings.
 * A class to interface with the OS X Keychain.
 * A class to send notifications to Mac OS X 10.8's Notification Center.
+* A class to send notifications and information over e-mail.
 * Several bundled modules for working with HTTP requests.
 
 However, you can pick and choose from among these by deleting any of the files in the module (except for `core.py`); if something is missing, alp will silently ignore it.
@@ -32,6 +33,8 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
     These functions will read from and write to the plist or JSON files located at `path`. If `path` is not an absolute path, they will treat it as a filename in the storage directory (so, for example, you could call `alp.jsonDump(dump.json)` without any problems.
 * `alp.find(query)`  
     Calls `mdfind` with the arguments given in `query`. For more information, see [`mdfind (1)`](https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man1/mdfind.1.html).
+* `alp.log(s)`  
+    Writes `s` to a file called `debug.log` in the workflow's main folder.
 
 
 ## Feedback System
@@ -120,6 +123,15 @@ If your workflow needs to store a user's sensitive data, particularly a username
     Changes the saved password for `account` to `newPassword`.
 * `keychain.deletePassword(account)`
     Removes `account`'s password from the Keychain.
+
+
+## E-mail
+By request, alp can also send simple plaintext messages over e-mail. Initialize the `alp.mail()` object with the following parameters: `alp.mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)`. `SSL` should be set to `True` or `False`, and `mimetype` defaults to "text/plain" if `None` is passed. `to` can be either a single e-mail address or a list of e-mail addresses. Use `mail.notify()` to send your message(s):
+
+    >>> e = alp.mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)
+    >>> e.notify()
+
+See the list of exceptions that can be raised [in the docs](http://docs.python.org/2/library/smtplib.html).
 
 
 ## Help and Support

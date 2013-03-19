@@ -124,6 +124,6 @@ def find(query):
     return returnList
 
 def log(s):
-    log_text = "[%s: %s (%s)]" % (bundle(), s, timestamp())
+    log_text = "[%s: %s (%s)]\n\n" % (bundle(), s, timestamp())
     with codecs.open(local("debug.log"), "w", "utf-8") as f:
         f.write(decode(log_text))
