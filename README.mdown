@@ -1,243 +1,123 @@
-PyAl: A Python Module for Alfred v2 Workflows
-=============================================
-PyAl is a Python module designed to automate a number of common and repetitive tasks in creating workflows for Alfred v2. In addition to handling the creation of feedback, the creation of cache files or folders, and similar tasks, PyAl bundles a number of handy modules that can be seamlessly and independently integrated into your workflow through PyAl. Though this project's pace of change is currently a little breakneck, demanding some attention from developers interested in integrating it into their own workflows, it is intended that the completed version will be virtually invisible, able to speed the development of workflows, improve their performance, and scale tall buildings in a single bound.
+# alp: A Python Module for Alfred Workflows
+Formerly PyAl, alp has been trimmed and slimmed to make building [Alfred v2][] workflows even easier. Not much was lost in the transition---and indeed, some neat things were gained---and so making the transition from PyAl to alp should be relatively easy. All in all, the module is intended to result in fewer lines of repeated code and easy accessibility for newcomers to workflow construction in Alfred and with Python.
 
-**Because this project is changing so quickly, please do not copy versions of PyAl from other developers' workflows.** You will only create more work for yourself---and less flow. The latest version of the module is available at <http://github.com/phyllisstein/PyAl>.
+alp's primary features include:
 
+* Functions for finding your bundle ID, cache and storage paths, and query arguments.
+* Functions for reading and writing JSON and plist files.
+* A class to simplify generating [feedback XML](http://www.alfredforum.com/topic/5-generating-feedback-in-workflows/) for Alfred.
+* A class to simplify saving and retrieving settings.
+* A class to interface with the OS X Keychain.
+* Several bundled modules for working with HTTP requests.
 
-Features
---------
-* A feedback class to which items can be added with a single line of code.
-* A class providing easy access to the OS X Keychain.
-* A simple, cached HTTP request class.
-* Methods to return your bundle ID, the path to your cache folder, and the path to your storage folder.
-* Spotlight search.
-* A settings class to store and retrieve variables across sessions.
+However, you can pick and choose from among these by deleting any of the files in the module (except for `core.py`); if something is missing, alp will silently ignore it.
 
+To get started, simply download or clone this repository and copy the `alp` folder into your workflow directory, then `import alp`. A list of everything alp can do, with appropriate documentation, is below.
 
-Usage
------
-To start using PyAl, simply paste the PyAl folder into your workflow's folder and add this line to the top of your code:
+## Core Functions
+These are intended to make some basic rote tasks easier and faster to code. alp defines the following functions:
 
-    import PyAl
-
-### Methods
-* `PyAl.bundle()`
-    
-    Reads your extension's bundle ID from its info.plist file and returns it.
-
-* `PyAl.local([join=None])`
-
-    Returns an absolute path to the current file's directory---usually your extension's absolute path.
-
-* `PyAl.timestamp([format=None])`
-
-    Returns a string with an alphabetically-sortable timestamp, or, optionally, a timestamp formatted with the format string
-    passed as `format`.
-
-* `PyAl.volatile([join=None])`
-
-    Returns the path to the volatile (cache) folder for your extension, creating the directory if it does
-    not already exist. If an argument is passed, returns the path to whatever is specified in the argument underneath
-    the volatile folder; **however, it does not create this file or folder**. Once you have the joined path, you
-    must do something with it.
-
-* `PyAl.nonvolatile([join=None])`
-
-    Returns the path to the nonvolatile (storage) folder for your extension, creating the directory if it does not
-    already exist. If an argument is passed, returns the path to whatever is specified in the argument underneath the
-    nonvolatile folder; **however, it does not create this file or folder**. Once you have the joined path, you must
-    do something with it.
-
-* `PyAl.readPlist(path)`
-
-    Returns the unpacked root object, usually a dictionary, for the plist file at `path`. If `path` is not an absolute
-    path (for instance, if you just pass a filename), tries to read from a file called `path` in the workflow's nonvolatile
-    folder.
-
-* `PyAl.writePlist(obj, path)`
-
-    Writes an object to the plist file at `path`. If `path` is not an absolute path (for instance, if you just pass a
-    filename), tries to write to a file called `path` in the workflow's nonvolatile folder.
-
-* `PyAl.jsonLoad(path)`
-
-    Returns the dictionary created by loading the JSON file at `path`. If `path` is not an absolute path (for instance, if
-    you just pass a filename), tries to read from a file called `path` in the workflow's nonvolatile folder. If `path` does
-    not exist, it is created with an empty dictionary which is then returned.
-
-* `PyAl.jsonDump(obj, path)`
-
-    Writes the object `obj` to the JSON file at `path`. If `path` is not an absolute path (for instance, if you just pass a
-    filename), tries to write to a file called `path` in the workflow's nonvolatile folder.
-
-* `PyAl.find(query)`
-
-    Returns a list containing the results of a Spotlight search for `query`.
+* **`alp.bundle()`**  
+    This function returns the bundle ID for your workflow by reading it from its `Info.plist` file.
+* **`alp.args()`**  
+    Returns a UTF-8 normalized list of the arguments passed to the script, which are normally separated by spaces. (Thanks to [nikipore](https://github.com/nikipore) for the idea and the tip about `unicodedata`.
+* **`alp.decode(s)`**  
+    Returns a UTF-8 normalized string for `s`.
+* **`alp.timestamp(format=None)`**  
+    Returns the current time, optionally formatted according to `format`. The default format is `%Y-%m-%d-%H%M%S%Z`.
+* **`alp.local(join=None)`**, **`alp,cache(join=None)`**, **`alp.storage(join=None)`**  
+    These functions return the paths to, respectively, the workflow's local directory, the workflow's designated cache (volatile storage) directory, and the workflow's designated storage (nonvolatile storage) directory. The directories will be created if they do not exist. By specifying an argument for `join`, you can have a file or folder name appended to the path---however, _this file or folder will not be created_.
+* **`alp.readPlist(path)`**, **`alp.writePlist(path)`**, **`alp.jsonLoad(path)`**, **`alp.jsonDump(path)`**  
+    These functions will read from and write to the plist or JSON files located at `path`. If `path` is not an absolute path, they will treat it as a filename in the storage directory (so, for example, you could call `alp.jsonDump(dump.json)` without any problems.
+* **`alp.find(query)`**  
+    Calls `mdfind` with the arguments given in `query`. For more information, see [`mdfind (1)`](https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man1/mdfind.1.html).
 
 
-### Classes
-#### Feedback
-The `PyAl.Feedback` class simplifies and indeed largely automates the creation of feedback XML for Alfred. It has been largely rewritten after PyAl v0.1 to make creating feedback XML even more simple and Pythonic. Note that this has involved splitting the feedback design into two classes, `PyAl.Feedback` and `PyAl.Item`, the latter of which is described below.
+## Feedback System
+alp uses a robust and complete implementation of Alfred's feedback system, generating and outputting the required XML for the attributes you specify. This breaks down into a class called `item` and a function called `feedback`.
 
-* `PyAl.Feedback([items=None[, fixedOrder=False]])`
+* **`alp.item(\*\*kwargs)`**  
+    The `item` class is initialized with a list of keys and values, and returns one `item` which can then be passed to the `feedback` function. The following keys are currently understood by alp and Alfred:
 
-    Initializes the object. `items` can be either a single `Item` or a list of `Item`s, and will initialize the object with
-    it or them already in place. If `fixedOrder` is set to `True`, the Feedback class will attempt to force Alfred to
-    arrange your items in the order that they're created.
+    + `title`: The title string to show in the feedback list.
+    + `subtitle`: The subtitle string to show below the title.
+    + `uid`: A unique identifier string for Alfred's sorting functions.
+    + `valid`: Either `True`, `False`, or a string. Tells Alfred whether the item is actionable.
+    + `autocomplete`: A string to autocomplete Alfred's query to when an invalid item is chosen.
+    + `icon`: A path to an icon image, a path to a file, or a file type (default: `icon.png`).
+    + `fileIcon`: If you wish to use a particular file's icon, set `icon` to its path and `fileIcon` to `True`.
+    + `fileType`: If you wish to specify a type of file whose icon Alfred should use, set `icon` to the type and `fileType` to `True`.
+    + `arg`: The argument to be passed as `{query}` if the item is valid and actioned.
+    + `type`: Currently, can only be set to `file`, which tells Alfred to treat the result as a file.
+* **`item.copy()`**  
+    Returns one copy of the item, which can then be modified separately and reused.
+* **`item.get()`**  
+    Returns the current values for the item in the following format. Primarily used with the `feedback()` function below.
 
-* `Feedback.add(items)`
-
-    Adds a single `Item` or a list of `Item`s to the feedback object.
-
-* `Feedback.get([index=None[, search=None]])`
-
-    If `get()` is called without any arguments, returns the entire list of `Item`s currently stored in the object. Passing
-    `index` will return the `Item` at `index`, and passing a string to `search` will look for `Item`s whose contents match
-    the string and return any matches.
-
-* `Feedback.pop([index=None[, search=None]])`
-
-    Behaves just like `get()`, but removes the `Item`s it finds from the object's list. Useful if you want to modify an
-    `Item` without generating duplicates.
-
-* `Feedback.list(item, length)`
-
-    Populates the object with `length` copies of the given `item`. **Caveat User:** It's not yet clear whether
-    this will be of any use.
-
-To return your feedback to Alfred, just pass your instance to `print` and he'll get the message.
-
-
-### Item
-This class makes creating items for feeding back to Alfred ludicrously simple. There are two ways to generate feedback items with this class. The first is to simply initialize it, passing values for the arguments you intend to use:
-
-* `PyAl.Item(**kwargs)`
-
-    Given a list of keywords and values for `**kwargs`, creates and returns an `Item` suitable for use with the `Feedback`
-    class. Currently, the following keywords are understood:
-
-    - `title`. A string setting the feedback item's `<title>` tag. Defaults to blank.
-    - `subtitle`. A string setting the feedback item's `<subtitle>` tag. Defaults to blank.
-    - `uid`. A string setting the feedback item's UID attribute. The bundle's ID will automatically be prepended. Defaults to the bundle ID.
-    - `valid`. Sets the feedback item's "valid" attribute. Can be `True`, `False`, or a string (use `"yes"` or `"no"`).
-    - `arg`. A string setting the feedback item's argument attribute, to be passed to the next stage of the workflow for valid items. Excluded from item attributes by default.
-    - `autocomplete`. A string to which the feedback item will autocomplete on Tab (for valid items) or "Return" (for invalid items). Excluded from item attributes by default.
-    - `icon`. A string setting the item's `<icon>` tag. By default, uses the `icon.png` in every workflow.
-    - `fileIcon`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a path to a file or folder and use that file or folder's icon. Note the camel case.
-    - `fileType`. Setting this to `True` will cause Alfred to treat the value of `<icon>` as a UTI (for example, `public.jpeg`) and use the icon assigned to it. Note the camel case.
-    - `order`. If this is set to a number the feedback object was initialized with `fixedOrder=True`, an earnest attempt will be made to assign the feedback item to the specified position _among your feedback items_.
-
-However, because this could potentially become cumbersome, the class has a second method to set up a feedback item: `Item.fromDictionary()`:
-
-* `Item.fromDictionary(dictionary)`
-
-    Behaves precisely like the initialization method. All of the keywords understood by `PyAl.Item()` can be used as
-    keys in a dict whose values will be passed to the `Item` instance. Particularly useful when processing results in bulk:
-    simply parse your results as a dictionary with some or all of the keys above and the values you intend to use.
-
-`fromDictionary()` could be especially useful for quickly creating many items in a row: just set up a default dictionary in your code, change its values as needed, and keep passing it to the method.
-
-Since creating many items in a row is a common task with Alfred feedback, this class has another method to simplify the process:
-
-* `Item.copy()`
-
-    Returns a copy of the instance of `Item`, which can then be modified as needed and passed back to a `Feedback` object.
-
-There are also accessor methods to modify or check an `Item` instance's values. Except for `Item.icon()`, each takes one optional argument, which should be set to the intended value; if no argument is passed, each returns the current value for the variable.
-
-* `Item.title([setTitle=None])`
-* `Item.subtitle([setSubtitle=None])`
-* `Item.uid([setUID=None])`
-* `Item.valid([setValid=None])`
-* `Item.autocomplete([setAutocomplete=None])`
-* `Item.order([setOrder=None])`
-
-The accessor method for the icon is similar, but takes two additional optional arguments: `fileIcon` and `fileType`. Setting either of these to `True` will cause Alfred to treat the icon value as a file from which to extract an icon or a UTI whose icon he should use.
-
-* `Item.icon([setIcon=None[, fileIcon=False[, fileType=False]]])`
-
-Finally, to get the entire contents of an `Item`, use the `Item.get()` method. It returns a dictionary formatted as follows:
-
-    {
-        "content":
         {
-            "title": self._title,
-            "subtitle": self._subtitle,
-            "icon": self._icon,
-            "fileIcon": self._fileIcon,
-            "fileType": self._fileType
+            "data":
+            {
+                "content":
+                {
+                    "title": self.title,
+                    "subtitle": self.subtitle,
+                    "icon": self.icon,
+                    "fileIcon": self.fileIcon,
+                    "fileType": self.fileType
+                },
+                "attrib":
+                {
+                    "uid": self.uid,
+                    "valid": self.valid
+                }
+            }
         }
-        "attrib":
-        {
-            "uid": self._uid,
-            "valid": self._valid
-        }
-    }
 
-The `"attrib"` dictionary may also contain keys for `"autocomplete"` and `"arg"`, if set, and the root object may contain a key for `"order"`, if set. All of this is mostly useful for the internal interaction between `Item`s and `Feedback`s, but could have other uses as well.
+    If `autocomplete`, `arg`, or `type` is set, that value will be added to the `"attrib"` dictionary.
+* **`alp.feedback(items)`**  
+    Takes either an individual item or a list of items for `items` and prints a UTF-8-encoded XML string for Alfred to interpret.
 
 
-### Request
-The `PyAl.Request` class aims at similar simplification and automation, but this time of HTTP requests (via the `requests` module). It sets up an HTTP requests cache (with the `requests_cache` module) and passes the returned data to BeautifulSoup for your searching and parsing convenience (see [the BeautifulSoup docs](http://www.crummy.com/software/BeautifulSoup/bs4/doc/) for more information).
+## HTTP Requests
+The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_cache](https://readthedocs.org/projects/requests-cache/), and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) are bundled with alp by default. (N.B.: Because they are relatively large, they can be removed from the module by deleting the folder `request`.) They vastly simplify making and interpreting HTTP requests. The alp `request` class provides a quick-and-dirty interface to them, setting up a requests cache, making a request, and passing the returned data to BeautifulSoup for parsing.
 
-* `PyAl.Request(url[, payload=None[, post=False]])`
-
-    Initializes the object by getting the data at `url`. `payload` may be set to a dictionary of keys and values to be
-    passed as GET arguments to the URL, or, if `post` is set to `True`, as POST data. You can interact with the request by
-    using the instance variable `myInstance.request`, and do anything with it
-    [that `requests` allows](http://docs.pythonrequests.org/en/latest/user/quickstart/).
-
-* `Request.souper()`
-
-    Checks to see that the request was successful; if not, it raises an exception; if so, it returns a BeautifulSoup object
-    for the request's text.
-
-Note that if you do not need to make an HTTP request, you can delete the folder `PyAl/Request` and it will be transparently disabled without affecting the other classes or methods. This is in the interest of maintaining a svelte workflow bundle.
+* **`alp.request(url, payload=None, post=False)`**  
+    The class is initialized with a URL to request, an optional key--value dictionary of arguments to pass to the URL, and an optional demand that the request be POSTed. The object will then have its own `request` property, which is a Requests object and can be manipulated in any way that a standard Requests object can (see the documentation for more info).
+* **`request.souper()`**  
+    This will return a BeautifulSoup object for the data pulled by your request, or else raise an exception if the request failed. BeautifulSoup makes parsing markup language much simpler; see its documentation for more information.
 
 
-### Settings
-`PyAl.Settings` smoothly and transparently loads and saves information to a stable settings file that will persist across instances of the script. It takes no arguments to instantiate, and defines three instance methods:
+## Settings Interface
+The alp `settings` object loads and saves settings in your workflow's designated storage path. On initialization, it looks for a settings file, creating it if it fails to find one and loading the predefined settings if it succeeds. It also defines the following methods:
 
-* `Settings.set(**kwargs)`
-
-    Taking `kwargs`, which must be a list of `key=value` arguments, saves the key and value in memory and to a JSON-encoded
-    settings file in the extension's nonvolatile folder.
-
-* `Settings.get(k[, default=None])`
-
-    Returns the currently-loaded value for the setting with key `k`. Returns `default` if no value is found for `k`.
-
-* `Settings.delete(k)`
-
-    Removes the setting with key `k` from memory and from the settings JSON file.
+* **`settings.set(\*\*kwargs)`**  
+    Load the key--value pairs defined in `\*\*kwargs` into memory and saves them to the settings file.
+* **`settings.get(k, default=None)`**  
+    Searches the loaded settings for key `k`, optionally returning `default` if no setting is found.
+* **`settings.delete(k)`**  
+    Unloads the setting for key `k` from memory and deletes it from the settings file.
 
 
-### Keychain
-This class provides a simple interface to the OS X keychain. It is currently able to store, retrieve, modify, and delete password data. To use it, simply instantiate and use the methods below to manipulate the data.
+## Keychain Interface
+If your workflow needs to store a user's sensitive data, particularly a username--password pair, the safest way to do so is with the Mac OS X Keychain. The Keychain is normally an utter pain in the behind, but alp makes working with it a breeze. Simply initialize `alp.keychain(service)` with a service name---for example, your workflow's bundle ID---and then use the following methods:
 
-* `PyAl.Keychain([service=None])`
-
-    Instantiates a keychain object to access data for the service `service`---or, if nothing is passed for `service`, your
-    extension's bundle ID.
-
-* `Keychain.storePassword(account, password)`
-
-    Stores a `password` for username `account` under the predefined service in the main keychain.
-
-* `Keychain.retrievePassword(account)`
-
-    Returns the password for the predefined service's `account`. Returns `None` if no password is found.
-
-* `Keychain.modifyPassword(account, newPassword)`
-
-    Changes the password for the predefined service's `account` to `newPassword`.
-
-* `Keychain.deletePassword(account)`
-
-    Deletes the saved password for the predefined service's `account`.
+* **`keychain.storePassword(account, password)`**  
+    Saves the password securely under the given account name.
+* **`keychain.retrievePassword(account)`**  
+    Searches the Keychain for an account matching the passed string, returning the password. Note that your script currently only has access to passwords defined by your script; you cannot start out searching for, say, "Twitter" and expect to come up with anything.
+* **`keychain.modifyPassword(account, newPassword)`**
+    Changes the saved password for `account` to `newPassword`.
+* **`keychain.deletePassword(account)`**
+    Removes `account`'s password from the Keychain.
 
 
-Help and Support
-----------------
+## Help and Support
 The [Alfred v2 forums](http://www.alfredforum.com) are a good place to look for answers, but you can also reach this package's maintenance man, [Daniel](http://daniel.sh), at d atsign daniel dot sh or on Twitter at [@phyllisstein](http://twitter.com/phyllisstein/).
+
+
+## License
+alp and all of its components are free to use and distribute however you see fit. Go hog-wild. The author appreciates getting some credit for his work, and the authors of Requests, requests_cache, and BeautifulSoup probably do as well, so it'd be neat if you'd mention us all somewhere. Additionally, donations are gratefully accepted over at [my Alfred website](http://alfred.daniel.sh).
+
+
+
+[Alfred v2]: http://www.alfredapp.com

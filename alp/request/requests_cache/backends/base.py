@@ -9,7 +9,7 @@
 """
 from datetime import datetime
 
-from PyAl.Request import requests
+from alp.request import requests
 
 
 class BaseCache(object):

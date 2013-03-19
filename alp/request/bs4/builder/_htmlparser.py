@@ -24,16 +24,16 @@ CONSTRUCTOR_TAKES_STRICT = (
     or (major == 3 and minor > 2)
     or (major == 3 and minor == 2 and release >= 3))
 
-from PyAl.Request.bs4.element import (
+from alp.request.bs4.element import (
     CData,
     Comment,
     Declaration,
     Doctype,
     ProcessingInstruction,
     )
-from PyAl.Request.bs4.dammit import EntitySubstitution, UnicodeDammit
+from alp.request.bs4.dammit import EntitySubstitution, UnicodeDammit
 
-from PyAl.Request.bs4.builder import (
+from alp.request.bs4.builder import (
     HTML,
     HTMLTreeBuilder,
     STRICT,

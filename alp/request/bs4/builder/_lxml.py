@@ -6,15 +6,15 @@ __all__ = [
 from StringIO import StringIO
 import collections
 from lxml import etree
-from PyAl.Request.bs4.element import Comment, Doctype, NamespacedAttribute
-from PyAl.Request.bs4.builder import (
+from alp.request.bs4.element import Comment, Doctype, NamespacedAttribute
+from alp.request.bs4.builder import (
     FAST,
     HTML,
     HTMLTreeBuilder,
     PERMISSIVE,
     TreeBuilder,
     XML)
-from PyAl.Request.bs4.dammit import UnicodeDammit
+from alp.request.bs4.dammit import UnicodeDammit
 
 LXML = 'lxml'
 

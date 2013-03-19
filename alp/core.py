@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import json
 import time
 import subprocess
 import os
+import sys
 import plistlib
+import unicodedata
 
 
 def bundle():
@@ -19,13 +23,16 @@ def bundle():
     return bundleID
 
 
-def local(join=None):
-    localPath = os.path.abspath("./")
+def args():
+    # With thanks to Github's nikipore for the pointer re. unicodedata.
+    returnList = []
+    for arg in sys.argv[1:]:
+        returnList.append(decode(arg))
+    return returnList
 
-    if join:
-        localPath = os.path.join(localPath, join)
 
-    return localPath
+def decode(s):
+    return unicodedata.normalize("NFC", s.decode("utf-8"))
 
 
 def timestamp(format=None):
@@ -35,7 +42,16 @@ def timestamp(format=None):
         return time.strftime("%Y-%m-%d-%H%M%S%Z")
 
 
-def volatile(join=None):
+def local(join=None):
+    localPath = os.path.abspath("./")
+
+    if join:
+        localPath = os.path.join(localPath, join)
+
+    return localPath
+
+
+def cache(join=None):
     bundleID = bundle()
     vPath = os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID))
 
@@ -48,7 +64,7 @@ def volatile(join=None):
     return vPath
 
 
-def nonvolatile(join=None):
+def storage(join=None):
     bundleID = bundle()
     nvPath = os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID))
 
@@ -65,19 +81,19 @@ def readPlist(path):
     if os.path.isabs(path):
         return plistlib.readPlist(path)
     else:
-        return plistlib.readPlist(nonvolatile(path))
+        return plistlib.readPlist(storage(path))
 
 
 def writePlist(obj, path):
     if os.path.isabs(path):
         plistlib.writePlist(obj, path)
     else:
-        plistlib.writePlist(obj, nonvolatile(path))
+        plistlib.writePlist(obj, storage(path))
 
 
 def jsonLoad(path):
     if not os.path.isabs(path):
-        path = nonvolatile(path)
+        path = storage(path)
 
     if os.path.exists(path):
         with open(path) as f:
@@ -92,13 +108,16 @@ def jsonLoad(path):
 
 def jsonDump(obj, path):
     if not os.path.isabs(path):
-        path = nonvolatile(path)
+        path = storage(path)
 
     with open(path) as f:
         json.dump(obj, f)
 
 
 def find(query):
-    output = subprocess.check_output(["mdfind", query])
+    qString = "mdfind %s" % query
+    output = subprocess.check_output(qString, shell=True)
     returnList = output.split("\n")
+    if returnList[-1] == "":
+        returnList = returnList[:-1]
     return returnList

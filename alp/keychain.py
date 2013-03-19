@@ -1,18 +1,15 @@
+# -*- coding: utf-8 -*-
+
 from ctypes import *
 from ctypes import util
-from core import *
 
 security = cdll.LoadLibrary(util.find_library("Security"))
 
 
-class Keychain:
-    def __init__(self, service=None):
-        if service:
-            self.service = c_char_p(service)
-            self.serviceLen = c_ulong(len(service))
-        else:
-            self.service = c_char_p(bundle())
-            self.serviceLen = c_ulong(len(bundle()))
+class keychain(object):
+    def __init__(self, service):
+        self.service = c_char_p(service)
+        self.serviceLen = c_ulong(len(service))
 
     def storePassword(self, account, password):
         acctLen = c_ulong(len(account))

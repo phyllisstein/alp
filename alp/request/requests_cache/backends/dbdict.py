@@ -18,7 +18,7 @@ try:
 except ImportError:
     import pickle
 
-from PyAl.Request.requests_cache.compat import bytes
+from alp.request.requests_cache.compat import bytes
 
 
 

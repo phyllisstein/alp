@@ -9,14 +9,14 @@
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-from PyAl.Request.requests import Request
+from alp.request.requests import Request
 try:
-    from PyAl.Request.requests.hooks import dispatch_hook
+    from alp.request.requests.hooks import dispatch_hook
 except ImportError:
     dispatch_hook = None
 
-from PyAl.Request.requests_cache import backends
-from PyAl.Request.requests_cache.compat import str
+from alp.request.requests_cache import backends
+from alp.request.requests_cache.compat import str
 
 
 _original_request_send = Request.send

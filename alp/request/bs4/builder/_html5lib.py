@@ -3,16 +3,16 @@ __all__ = [
     ]
 
 import warnings
-from PyAl.Request.bs4.builder import (
+from alp.request.bs4.builder import (
     PERMISSIVE,
     HTML,
     HTML_5,
     HTMLTreeBuilder,
     )
-from PyAl.Request.bs4.element import NamespacedAttribute
+from alp.request.bs4.element import NamespacedAttribute
 import html5lib
 from html5lib.constants import namespaces
-from PyAl.Request.bs4.element import (
+from alp.request.bs4.element import (
     Comment,
     Doctype,
     NavigableString,

@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import json
 import os
-from .core import *
+import alp.core as core
 
 
-class Settings:
+class settings(object):
     def __init__(self):
-        bundleID = bundle()
-        self._settingsPath = nonvolatile(bundleID + ".settings.json")
+        bundleID = core.bundle()
+        self._settingsPath = core.nonvolatile(bundleID + ".settings.json")
         if not os.path.exists(self._settingsPath):
             blank = {}
             with open(self._settingsPath, "w") as f:
@@ -30,10 +32,7 @@ class Settings:
             return default
 
     def delete(self, k):
-        try:
-            if k in self._loadedSettings.keys():
-                self._loadedSettings.pop(k)
-                with open(self._settingsPath, "w") as f:
-                    json.dump(self._loadedSettings, f)
-        except Exception:
-            pass
+        if k in self._loadedSettings.keys():
+            self._loadedSettings.pop(k)
+            with open(self._settingsPath, "w") as f:
+                json.dump(self._loadedSettings, f)

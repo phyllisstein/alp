@@ -1,13 +1,13 @@
-from PyAl.core import *
+import alp.core as core
 from bs4 import BeautifulSoup
 import requests
 import requests_cache
 
 
-class Request:
+class request:
     def __init__(self, url, payload=None, post=False):
-        bundleID = bundle()
-        cacheName = volatile(bundleID + "_requests_cache")
+        bundleID = core.bundle()
+        cacheName = core.cache(bundleID + "_requests_cache")
         requests_cache.configure(cacheName)
         if payload:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
