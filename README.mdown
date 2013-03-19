@@ -38,10 +38,10 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
 
 
 ## Feedback System
-alp uses a robust and complete implementation of Alfred's feedback system, generating and outputting the required XML for the attributes you specify. This breaks down into a class called `item` and a function called `feedback`.
+alp uses a robust and complete implementation of Alfred's feedback system, generating and outputting the required XML for the attributes you specify. This breaks down into a class called `Item` and a function called `feedback`.
 
-* `alp.item(**kwargs)`  
-    The `item` class is initialized with a list of keys and values, and returns one `item` which can then be passed to the `feedback` function. The following keys are currently understood by alp and Alfred:
+* `alp.Item(**kwargs)`  
+    The `Item` class is initialized with a list of keys and values, and returns one `Item` which can then be passed to the `feedback` function. The following keys are currently understood by alp and Alfred:
 
     + `title`: The title string to show in the feedback list.
     + `subtitle`: The subtitle string to show below the title.
@@ -53,9 +53,9 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
     + `fileType`: If you wish to specify a type of file whose icon Alfred should use, set `icon` to the type and `fileType` to `True`.
     + `arg`: The argument to be passed as `{query}` if the item is valid and actioned.
     + `type`: Currently, can only be set to `file`, which tells Alfred to treat the result as a file.
-* `item.copy()`  
+* `Item.copy()`  
     Returns one copy of the item, which can then be modified separately and reused.
-* `item.get()`  
+* `Item.get()`  
     Returns the current values for the item in the following format. Primarily used with the `feedback()` function below.
 
         {
@@ -83,52 +83,52 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
 
 
 ## Notifications
-The fact that Alfred's internal workflow workings only make it possible for a workflow to output one string can be frustrating. Enter alp's `notification` class. It's used a little something like this:
+The fact that Alfred's internal workflow workings only make it possible for a workflow to output one string can be frustrating. Enter alp's `Notification` class. It's used a little something like this:
 
     >>> import alp
-    >>> n = alp.notification()
+    >>> n = alp.Notification()
     >>> n.notify("Title", "Subtitle", "Informative Text")
 
 The title, subtitle, and informative text should be strings. This will pop up a notification that bears Python's logo but is otherwise indistinguishable from any of Alfred's notices. Currently, this is restricted to sending messages to the user---there's not yet a way to know whether the user clicks the notification, for example---but the problem is being worked on.
 
 
 ## HTTP Requests
-The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_cache](https://readthedocs.org/projects/requests-cache/), and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) are bundled with alp by default. (N.B.: Because they are relatively large, they can be removed from the module by deleting the folder `request`.) They vastly simplify making and interpreting HTTP requests. The alp `request` class provides a quick-and-dirty interface to them, setting up a requests cache, making a request, and passing the returned data to BeautifulSoup for parsing.
+The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_cache](https://readthedocs.org/projects/requests-cache/), and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) are bundled with alp by default. (N.B.: Because they are relatively large, they can be removed from the module by deleting the folder `request`.) They vastly simplify making and interpreting HTTP requests. The alp `Request` class provides a quick-and-dirty interface to them, setting up a requests cache, making a request, and passing the returned data to BeautifulSoup for parsing.
 
-* `alp.request(url, payload=None, post=False)`  
+* `alp.Request(url, payload=None, post=False)`  
     The class is initialized with a URL to request, an optional key--value dictionary of arguments to pass to the URL, and an optional demand that the request be POSTed. The object will then have its own `request` property, which is a Requests object and can be manipulated in any way that a standard Requests object can (see the documentation for more info).
-* `request.souper()`  
+* `Request.souper()`  
     This will return a BeautifulSoup object for the data pulled by your request, or else raise an exception if the request failed. BeautifulSoup makes parsing markup language much simpler; see its documentation for more information.
 
 
 ## Settings Interface
-The alp `settings` object loads and saves settings in your workflow's designated storage path. On initialization, it looks for a settings file, creating it if it fails to find one and loading the predefined settings if it succeeds. It also defines the following methods:
+The alp `Settings` object loads and saves settings in your workflow's designated storage path. On initialization, it looks for a settings file, creating it if it fails to find one and loading the predefined settings if it succeeds. It also defines the following methods:
 
-* `settings.set(**kwargs)`  
+* `Settings.set(**kwargs)`  
     Load the key--value pairs defined in `**kwargs` into memory and saves them to the settings file.
-* `settings.get(k, default=None)`  
+* `Settings.get(k, default=None)`  
     Searches the loaded settings for key `k`, optionally returning `default` if no setting is found.
-* `settings.delete(k)`  
+* `Settings.delete(k)`  
     Unloads the setting for key `k` from memory and deletes it from the settings file.
 
 
 ## Keychain Interface
-If your workflow needs to store a user's sensitive data, particularly a username--password pair, the safest way to do so is with the Mac OS X Keychain. The Keychain is normally an utter pain in the behind, but alp makes working with it a breeze. Simply initialize `alp.keychain(service)` with a service name---for example, your workflow's bundle ID---and then use the following methods:
+If your workflow needs to store a user's sensitive data, particularly a username--password pair, the safest way to do so is with the Mac OS X Keychain. The Keychain is normally an utter pain in the behind, but alp makes working with it a breeze. Simply initialize `alp.Keychain(service)` with a service name---for example, your workflow's bundle ID---and then use the following methods:
 
-* `keychain.storePassword(account, password)`  
+* `Keychain.storePassword(account, password)`  
     Saves the password securely under the given account name.
-* `keychain.retrievePassword(account)`  
+* `Keychain.retrievePassword(account)`  
     Searches the Keychain for an account matching the passed string, returning the password. Note that your script currently only has access to passwords defined by your script; you cannot start out searching for, say, "Twitter" and expect to come up with anything.
-* `keychain.modifyPassword(account, newPassword)`
+* `Keychain.modifyPassword(account, newPassword)`
     Changes the saved password for `account` to `newPassword`.
-* `keychain.deletePassword(account)`
+* `Keychain.deletePassword(account)`
     Removes `account`'s password from the Keychain.
 
 
 ## E-mail
-By request, alp can also send simple plaintext messages over e-mail. Initialize the `alp.mail()` object with the following parameters: `alp.mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)`. `SSL` should be set to `True` or `False`, and `mimetype` defaults to "text/plain" if `None` is passed. `to` can be either a single e-mail address or a list of e-mail addresses. Use `mail.notify()` to send your message(s):
+By request, alp can also send simple plaintext messages over e-mail. Initialize the `alp.Mail()` object with the following parameters: `alp.Mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)`. `SSL` should be set to `True` or `False`, and `mimetype` defaults to "text/plain" if `None` is passed. `to` can be either a single e-mail address or a list of e-mail addresses. Use `Mail.notify()` to send your message(s):
 
-    >>> e = alp.mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)
+    >>> e = alp.Mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)
     >>> e.notify()
 
 See the list of exceptions that can be raised [in the docs](http://docs.python.org/2/library/smtplib.html).

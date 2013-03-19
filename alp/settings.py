@@ -6,7 +6,7 @@ import alp.core as core
 import codecs
 
 
-class settings(object):
+class Settings(object):
     def __init__(self):
         bundleID = core.bundle()
         self._settingsPath = core.nonvolatile(bundleID + ".settings.json")

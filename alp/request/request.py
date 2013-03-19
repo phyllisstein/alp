@@ -4,7 +4,7 @@ import requests
 import requests_cache
 
 
-class request:
+class Request(object):
     def __init__(self, url, payload=None, post=False):
         bundleID = core.bundle()
         cacheName = core.cache(bundleID + "_requests_cache")

@@ -12,7 +12,7 @@ NSUserNotificationActivationTypeContentsClicked = 1
 NSUserNotificationActivationTypeActionButtonClicked = 2
 
 
-class notification(object):
+class Notification(object):
     def notify(self, title, subtitle, text, info=None):
         v, _, _ = platform.mac_ver()
         v = float('.'.join(v.split('.')[:2]))

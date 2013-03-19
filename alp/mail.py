@@ -4,7 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-class mail(object):
+class Mail(object):
     def __init__(self, host, port, SSL, user, pw, sender, to, mimetype, subject, body):
         self.host = host
         self.port = port

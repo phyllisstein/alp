@@ -6,7 +6,7 @@ from ctypes import util
 security = cdll.LoadLibrary(util.find_library("Security"))
 
 
-class keychain(object):
+class Keychain(object):
     def __init__(self, service):
         self.service = c_char_p(service)
         self.serviceLen = c_ulong(len(service))

@@ -4,7 +4,7 @@ from xml.etree import ElementTree as ET
 import copy
 
 
-class item(object):
+class Item(object):
     def __init__(self, **kwargs):
         self.title = kwargs.pop("title", "")
         self.subtitle = kwargs.pop("subtitle", "")
