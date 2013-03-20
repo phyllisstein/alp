@@ -9,7 +9,7 @@ import codecs
 class Settings(object):
     def __init__(self):
         bundleID = core.bundle()
-        self._settingsPath = core.nonvolatile(bundleID + ".settings.json")
+        self._settingsPath = core.storage(bundleID + ".settings.json")
         if not os.path.exists(self._settingsPath):
             blank = {}
             with codecs.open(self._settingsPath, "w", "utf-8") as f:
