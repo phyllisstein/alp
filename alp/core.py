@@ -40,7 +40,7 @@ def timestamp(format=None):
     if format:
         return time.strftime(format)
     else:
-        return time.strftime("%Y-%m-%d-%H%M%S%Z")
+        return time.strftime("%Y-%m-%d-%H:%M:%S")
 
 
 def local(join=None):
@@ -124,6 +124,9 @@ def find(query):
     return returnList
 
 def log(s):
-    log_text = "[%s: %s (%s)]\n\n" % (bundle(), s, timestamp())
-    with codecs.open(local("debug.log"), "w", "utf-8") as f:
+    log_text = "[%s: %s (%s)]\n" % (bundle(), s, timestamp())
+    if not os.path.exists(local("debug.log")):
+        with open(local("debug.log"), "w") as f:
+            f.write("\n")
+    with codecs.open(local("debug.log"), "a", "utf-8") as f:
         f.write(decode(log_text))
