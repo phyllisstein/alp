@@ -5,6 +5,6 @@ try:
     from .settings import *
     from .notification import *
     from .mail import *
-    from alp.request.request import *
+    from alp.request.Request import *
 except ImportError:
     pass
