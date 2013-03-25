@@ -116,7 +116,7 @@ def jsonDump(obj, path):
 
 
 def find(query):
-    qString = "mdfind %s" % query
+    qString = "mdfind {0}".format(query)
     output = subprocess.check_output(qString, shell=True)
     returnList = output.split("\n")
     if returnList[-1] == "":
@@ -124,7 +124,7 @@ def find(query):
     return returnList
 
 def log(s):
-    log_text = "[%s: %s (%s)]\n" % (bundle(), s, timestamp())
+    log_text = "[{0}: {1} ({2})]\n".format(bundle(), s, timestamp()))
     if not os.path.exists(local("debug.log")):
         with open(local("debug.log"), "w") as f:
             f.write("\n")
