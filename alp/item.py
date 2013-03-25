@@ -58,7 +58,7 @@ def feedback(items):
     def processItem(item):
         itemToAdd = ET.SubElement(feedback, "item")
 
-        data = anItem.get()
+        data = item.get()
 
         for (k, v) in data["attrib"].iteritems():
             itemToAdd.set(k, v)
