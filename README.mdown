@@ -27,7 +27,7 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
     Returns a UTF-8 normalized string for `s`.
 * `alp.timestamp(format=None)`  
     Returns the current time, optionally formatted according to `format`. The default format is `%Y-%m-%d-%H%M%S%Z`.
-* `alp.local(join=None)`, `alp,cache(join=None)`, `alp.storage(join=None)`  
+* `alp.local(join=None)`, `alp.cache(join=None)`, `alp.storage(join=None)`  
     These functions return the paths to, respectively, the workflow's local directory, the workflow's designated cache (volatile storage) directory, and the workflow's designated storage (nonvolatile storage) directory. The directories will be created if they do not exist. By specifying an argument for `join`, you can have a file or folder name appended to the path---however, _this file or folder will not be created_.
 * `alp.readPlist(path)`, `alp.writePlist(path)`, `alp.jsonLoad(path)`, `alp.jsonDump(path)`  
     These functions will read from and write to the plist or JSON files located at `path`. If `path` is not an absolute path, they will treat it as a filename in the storage directory (so, for example, you could call `alp.jsonDump(dump.json)` without any problems.
