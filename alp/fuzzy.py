@@ -135,7 +135,7 @@ def fuzzy_search(query, elements, key=lambda x: x, rank=True, seq=3):
         rank: rank the elements in the return list by quality of match (currently not supported)
         seq: minimum sequence of characters to match
     Returns:
-        list of elements that matches the query
+        a ranked list of elements that matches the query
 
     Fuzzy matching with rankning based on quality of match with two criteria
     (a) sequence of characters (e.g. for query 'nor', 'nor' is better then 'nxoxr')
