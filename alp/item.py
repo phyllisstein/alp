@@ -2,13 +2,15 @@
 
 from xml.etree import ElementTree as ET
 import copy
+import random
+import alp.core as core
 
 
 class Item(object):
     def __init__(self, **kwargs):
         self.title = kwargs.pop("title", "")
         self.subtitle = kwargs.pop("subtitle", "")
-        self.uid = kwargs.pop("uid", "")
+        self.uid = kwargs.pop("uid", "{0}.{1}".format(core.bundle(), random.getrandbits(40)))
         if "valid" in kwargs.keys():
             if kwargs["valid"] == True:
                 self.valid = "yes"

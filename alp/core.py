@@ -36,13 +36,6 @@ def decode(s):
     return unicodedata.normalize("NFC", s.decode("utf-8"))
 
 
-def timestamp(format=None):
-    if format:
-        return time.strftime(format)
-    else:
-        return time.strftime("%Y-%m-%d-%H:%M:%S")
-
-
 def local(join=None):
     localPath = os.path.abspath("./")
 
@@ -124,7 +117,7 @@ def find(query):
     return returnList
 
 def log(s):
-    log_text = "[{0}: {1} ({2})]\n".format(bundle(), s, timestamp())
+    log_text = "[{0}: {1} ({2})]\n".format(bundle(), s, time.strftime("%Y-%m-%d-%H:%M:%S"))
     if not os.path.exists(local("debug.log")):
         with open(local("debug.log"), "w") as f:
             f.write("\n")
