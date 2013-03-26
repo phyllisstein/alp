@@ -4,6 +4,7 @@ try:
     from .keychain import *
     from .settings import *
     from .mail import *
+    from .fuzzy import *
     from alp.request.request import *
 except ImportError:
     pass
