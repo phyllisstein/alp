@@ -63,9 +63,13 @@ def feedback(items):
         data = item.get()
 
         for (k, v) in data["attrib"].iteritems():
+            if v is None:
+                continue
             itemToAdd.set(k, v)
 
         for (k, v) in data["content"].iteritems():
+            if v is None:
+                continue
             if k != "fileIcon" and k != "fileType":
                 child = ET.SubElement(itemToAdd, k)
                 child.text = v
