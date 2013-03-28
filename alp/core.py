@@ -10,18 +10,26 @@ import unicodedata
 import codecs
 
 
+gBundleID = None
+
+
 def bundle():
+    global gBundleID
+
+    if gBundleID is not None:
+        return gBundleID
+
     infoPath = os.path.abspath("./info.plist")
     if os.path.exists(infoPath):
         info = plistlib.readPlist(infoPath)
         try:
-            bundleID = info["bundleid"]
+            gBundleID = info["bundleid"]
         except KeyError:
             raise Exception("Bundle ID not defined or readable from info.plist.")
     else:
         raise Exception("info.plist missing.")
 
-    return bundleID
+    return gBundleID
 
 
 def args():
@@ -115,6 +123,7 @@ def find(query):
     if returnList[-1] == "":
         returnList = returnList[:-1]
     return returnList
+
 
 def log(s):
     log_text = "[{0}: {1} ({2})]\n".format(bundle(), s, time.strftime("%Y-%m-%d-%H:%M:%S"))
