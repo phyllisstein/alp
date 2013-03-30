@@ -22,11 +22,9 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
 * `alp.bundle()`  
     This function returns the bundle ID for your workflow by reading it from its `Info.plist` file.
 * `alp.args()`  
-    Returns a UTF-8 normalized list of the arguments passed to the script, which are normally separated by spaces. (Thanks to [nikipore](https://github.com/nikipore) for the idea and the tip about `unicodedata`.
+    Returns a UTF-8 normalized list of the arguments passed to the script, which are normally separated by spaces. (Thanks to [nikipore](https://github.com/nikipore) for the idea and the tip about `unicodedata`.)
 * `alp.decode(s)`  
     Returns a UTF-8 normalized string for `s`.
-* `alp.timestamp(format=None)`  
-    Returns the current time, optionally formatted according to `format`. The default format is `%Y-%m-%d-%H%M%S%Z`.
 * `alp.local(join=None)`, `alp.cache(join=None)`, `alp.storage(join=None)`  
     These functions return the paths to, respectively, the workflow's local directory, the workflow's designated cache (volatile storage) directory, and the workflow's designated storage (nonvolatile storage) directory. The directories will be created if they do not exist. By specifying an argument for `join`, you can have a file or folder name appended to the path---however, _this file or folder will not be created_.
 * `alp.readPlist(path)`, `alp.writePlist(path)`, `alp.jsonLoad(path)`, `alp.jsonDump(path)`  
@@ -53,6 +51,12 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
     + `fileType`: If you wish to specify a type of file whose icon Alfred should use, set `icon` to the type and `fileType` to `True`.
     + `arg`: The argument to be passed as `{query}` if the item is valid and actioned.
     + `type`: Currently, can only be set to `file`, which tells Alfred to treat the result as a file.
+
+    A nifty trick is to pass a dictionary with some or all of `alp.Item`'s keys and values into the initializer. So you could conceivably do this:
+
+        >>> iDict = dict(title="A Title", subtitle="This is only a test.", uid="alp-test", valid=False)
+        >>> i = alp.Item(**iDict)
+
 * `Item.copy()`  
     Returns one copy of the item, which can then be modified separately and reused.
 * `Item.get()`  
