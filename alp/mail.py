@@ -13,7 +13,7 @@ class Mail(object):
         self.pw = pw
         self.sender = sender
         self.to = to
-        self.mimetype = mimetype if mimetype else "text/plain"
+        self.mimetype = mimetype if mimetype else "plain"
         self.subject = subject
         self.body = body
 

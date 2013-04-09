@@ -130,7 +130,7 @@ If your workflow needs to store a user's sensitive data, particularly a username
 
 
 ## E-mail
-By request, alp can also send simple plaintext messages over e-mail. Initialize the `alp.Mail()` object with the following parameters: `alp.Mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)`. `SSL` should be set to `True` or `False`, and `mimetype` defaults to "text/plain" if `None` is passed. `to` can be either a single e-mail address or a list of e-mail addresses. Use `Mail.notify()` to send your message(s):
+By request, alp can also send simple plaintext messages over e-mail. Initialize the `alp.Mail()` object with the following parameters: `alp.Mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)`. `SSL` should be set to `True` or `False`. `mimetype` should be a string specifying the MIME subtype under "text/" and defaults to "plain" if `None` is passed. `to` can be either a single e-mail address or a list of e-mail addresses. Use `Mail.notify()` to send your message(s):
 
     >>> e = alp.Mail(host, port, SSL, user, pw, sender, to, mimetype, subject, body)
     >>> e.notify()
