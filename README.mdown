@@ -27,8 +27,8 @@ These are intended to make some basic rote tasks easier and faster to code. alp 
     Returns a UTF-8 normalized string for `s`.
 * `alp.local(join=None)`, `alp.cache(join=None)`, `alp.storage(join=None)`  
     These functions return the paths to, respectively, the workflow's local directory, the workflow's designated cache (volatile storage) directory, and the workflow's designated storage (nonvolatile storage) directory. The directories will be created if they do not exist. By specifying an argument for `join`, you can have a file or folder name appended to the path---however, _this file or folder will not be created_.
-* `alp.readPlist(path)`, `alp.writePlist(path)`, `alp.jsonLoad(path)`, `alp.jsonDump(path)`  
-    These functions will read from and write to the plist or JSON files located at `path`. If `path` is not an absolute path, they will treat it as a filename in the storage directory (so, for example, you could call `alp.jsonDump("dump.json")` without any problems.
+* `alp.readPlist(path)`, `alp.writePlist(path)`, `alp.jsonLoad(path, default=None)`, `alp.jsonDump(path)`  
+    These functions will read from and write to the plist or JSON files located at `path`. If `path` is not an absolute path, they will treat it as a filename in the storage directory (so, for example, you could call `alp.jsonDump("dump.json")` without any problems. `jsonLoad` has one additional argument, `default`, specifying the object to be dumped and returned if the JSON file did not already exist. For example, calling `alp.jsonLoad("foo.json", [])` would load `foo.json` with an empty list if the file was not found.
 * `alp.find(query)`  
     Calls `mdfind` with the arguments given in `query`. For more information, see [`mdfind (1)`](https://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man1/mdfind.1.html).
 * `alp.log(s)`  

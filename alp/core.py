@@ -93,7 +93,7 @@ def writePlist(obj, path):
         plistlib.writePlist(obj, storage(path))
 
 
-def jsonLoad(path):
+def jsonLoad(path, default=None):
     if not os.path.isabs(path):
         path = storage(path)
 
@@ -101,11 +101,14 @@ def jsonLoad(path):
         with codecs.open(path, "r", "utf-8") as f:
             read = json.load(f)
         return read
-    else:
-        blank = {}
+    elif default != None:
         with codecs.open(path, "w", "utf-8") as f:
-            json.dump(blank, f)
-        return blank
+            json.dump(default, f)
+        return default
+    else:
+        with codecs.open(path, "w", "utf-8") as f:
+            f.write("\n")
+        return None
 
 
 def jsonDump(obj, path):
