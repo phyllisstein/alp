@@ -23,5 +23,5 @@ class Request(object):
         else:
             self.request.raise_for_status()
 
-    def clear_cache():
+    def clear_cache(self):
         requests_cache.clear()
