@@ -103,6 +103,8 @@ The modules [Requests](http://docs.python-requests.org/en/latest/), [requests_ca
     The class is initialized with a URL to request, an optional key--value dictionary of arguments to pass to the URL, an optional demand that the request be POSTed, and an optional timeout---in seconds---for the cache. (By default, the cache lasts one day; pass a negative value to prevent it from expiring.) The object will then have its own `request` property, which is a Requests object and can be manipulated in any way that a standard Requests object can (see [the documentation](http://docs.python-requests.org/en/latest/) for more info).
 * `Request.souper()`  
     This will return a BeautifulSoup object for the data pulled by your request, or else raise an exception if the request failed. BeautifulSoup makes parsing markup language much simpler; see [its documentation](http://www.crummy.com/software/BeautifulSoup/bs4/doc/) for more information.
+* `Request.clear_cache()`  
+    Clears the cache being used by `requests_cache` immediately.
 
 
 ## Settings Interface
