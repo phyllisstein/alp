@@ -5,10 +5,13 @@ import requests_cache
 
 
 class Request(object):
-    def __init__(self, url, payload=None, post=False):
-        bundleID = core.bundle()
-        cacheName = core.cache(bundleID + "_requests_cache")
-        requests_cache.configure(cacheName)
+    def __init__(self, url, payload=None, post=False, cache_for=None):
+        cacheName = core.cache("requests_cache")
+        if cache_for != None and cache_for < 0:
+            exp = None
+        else:
+            exp = cache_for or 24 * (60^3)
+        requests_cache.install_cache(cacheName, expire_after=exp)
         if payload:
             self.request = requests.get(url, params=payload) if not post else requests.post(url, data=payload)
         else:
@@ -19,3 +22,6 @@ class Request(object):
             return BeautifulSoup(self.request.text)
         else:
             self.request.raise_for_status()
+
+    def clear_cache():
+        requests_cache.clear()

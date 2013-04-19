@@ -8,7 +8,7 @@
 """
 
 
-from alp.request.requests_cache.backends.base import BaseCache
+from .base import BaseCache
 
 registry = {
     'memory': BaseCache,
@@ -22,7 +22,13 @@ except ImportError:
     DbCache = None
 
 try:
-    from alp.request.requests_cache.mongo import MongoCache
+    from alp.request.requests_cache.backends.mongo import MongoCache
     registry['mongo'] = registry['mongodb'] = MongoCache
 except ImportError:
     MongoCache = None
+
+try:
+    from alp.request.requests_cache.backends.redis import RedisCache
+    registry['redis'] = RedisCache
+except ImportError:
+    RedisCache = None
