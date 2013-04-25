@@ -107,8 +107,8 @@ def rank(x, NoneIsLast=True, decreasing=False, ties="first"):
 def match_rank(query, strings, seq=3):
     # create regular expression that (a) matches all letters of query, (b) correct order
     # see http://stackoverflow.com/a/2897073/1318686 for more details
-    el = '[^{s}]*({s})'
-    expr = ''.join([el.format(s=c) for c in query])
+    el = u'[^{s}]*({s})'
+    expr = u''.join([el.format(s=c) for c in query])
     # create matches
     mat = [re.match(expr, s, re.IGNORECASE) if query[0:seq].lower() in s.lower() else None for s in strings]
     # position of matched elements
