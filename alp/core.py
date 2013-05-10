@@ -80,17 +80,22 @@ def storage(join=None):
 
 
 def readPlist(path):
-    if os.path.isabs(path):
-        return plistlib.readPlist(path)
-    else:
-        return plistlib.readPlist(storage(path))
+    if not os.path.isabs(path):
+        path = storage(path)
+    
+    with codecs.open(path, "r", "utf-8") as f:
+        s = f.read()
+
+    return plistlib.readPlistFromString(s)
 
 
 def writePlist(obj, path):
-    if os.path.isabs(path):
-        plistlib.writePlist(obj, path)
-    else:
-        plistlib.writePlist(obj, storage(path))
+    if not os.path.isabs(path):
+        path = storage(path)
+    
+    s = plistlib.writePlistToString(obj)
+    with codecs.open(path, "w", "utf-8") as f:
+        f.write(s)
 
 
 def jsonLoad(path, default=None):
