@@ -8,6 +8,7 @@ import sys
 import biplist
 import unicodedata
 import codecs
+import six
 
 
 gBundleID = None
@@ -79,11 +80,11 @@ def storage(join=None):
     return nvPath
 
 
-def readPlist(path, binary=True):
+def readPlist(path):
     if not os.path.isabs(path):
         path = storage(path)
         
-    if binary:
+    if isinstance(path, (six.binary_type)):
         return biplist.readPlist(path)
             
     with codecs.open(path, "r", "utf-8") as f:
