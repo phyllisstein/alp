@@ -5,7 +5,7 @@ import time
 import subprocess
 import os
 import sys
-import plistlib
+import biplist
 import unicodedata
 import codecs
 
@@ -21,7 +21,7 @@ def bundle():
 
     infoPath = os.path.abspath("./info.plist")
     if os.path.exists(infoPath):
-        info = plistlib.readPlist(infoPath)
+        info = biplist.readPlist(infoPath)
         try:
             gBundleID = info["bundleid"]
         except KeyError:
@@ -79,21 +79,27 @@ def storage(join=None):
     return nvPath
 
 
-def readPlist(path):
+def readPlist(path, binary=True):
     if not os.path.isabs(path):
         path = storage(path)
-    
+        
+    if binary:
+        return biplist.readPlist(path)
+            
     with codecs.open(path, "r", "utf-8") as f:
         s = f.read()
 
-    return plistlib.readPlistFromString(s)
+    return biplist.readPlistFromString(s)
 
 
-def writePlist(obj, path):
+def writePlist(obj, path, binary=False):
     if not os.path.isabs(path):
         path = storage(path)
+        
+    if binary:
+        biplist.writePlist(obj, path, binary)
     
-    s = plistlib.writePlistToString(obj)
+    s = biplist.writePlistToString(obj)
     with codecs.open(path, "w", "utf-8") as f:
         f.write(s)
 
