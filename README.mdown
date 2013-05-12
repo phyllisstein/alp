@@ -12,7 +12,7 @@ alp's primary features include:
 * A class to send notifications and information over e-mail.
 * Several bundled modules for working with HTTP requests.
 
-However, you can pick and choose from among these by deleting any of the files in the module (except for `core.py`); if something is missing, alp will silently ignore it.
+However, you can pick and choose from among these by deleting any of the files in the module (except for `core.py` and the folder `core_dependencies`); if something is missing, alp will silently ignore it.
 
 To get started, simply download or clone this repository and copy the `alp` folder into your workflow directory, then `import alp`. A list of everything alp can do, with appropriate documentation, is below.
 
@@ -145,7 +145,7 @@ The [Alfred v2 forums](http://www.alfredforum.com) are a good place to look for 
 
 
 ## License
-alp and all of its components are free to use and distribute however you see fit. Go hog-wild. The author appreciates getting some credit for his work, and the authors of Requests, requests_cache, and BeautifulSoup probably do as well, so it'd be neat if you'd mention us all somewhere. Additionally, donations are gratefully accepted over at [my Alfred website](http://alfred.daniel.sh).
+alp and all of its components are free to use and distribute however you see fit. Go hog-wild. The author appreciates getting some credit for his work, and the authors of Requests, requests_cache, BeautifulSoup, [six](https://bitbucket.org/gutworth/six/), and [biplist](https://github.com/wooster/biplist/) probably do as well, so it'd be neat if you'd mention us all somewhere. Additionally, donations are gratefully accepted over at [my Alfred website](http://alfred.daniel.sh).
 
 
 
