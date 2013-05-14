@@ -5,6 +5,7 @@ alp's primary features include:
 
 * Functions for finding your bundle ID, cache and storage paths, and query arguments.
 * Functions for reading and writing JSON and plist files.
+* A function to perform fuzzy searching operations.
 * A class to simplify generating [feedback XML](http://www.alfredforum.com/topic/5-generating-feedback-in-workflows/) for Alfred.
 * A class to simplify saving and retrieving settings.
 * A class to interface with the OS X Keychain.
@@ -84,6 +85,16 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
     If `autocomplete`, `arg`, or `type` is set, that value will be added to the `"attrib"` dictionary.
 * `alp.feedback(items)`  
     Takes either an individual item or a list of items for `items` and prints a UTF-8-encoded XML string for Alfred to interpret.
+
+
+## Fuzzy Search
+Github user [jlegewie](https://github.com/jlegewie) has contributed a stellar fuzzy-searching method to alp. Given a query, a list of strings, dictionaries, tuples, or other lists, and a key function, it returns a ranked list of matching objects. To use it, first get your data into an appropriate list, then call `alp.fuzzy_search()` with the following parameters: `alp.fuzzy_search(query, elements, key, rank, seq)`. [jlegewie](https://github.com/jlegewie) has provided the following example:
+
+    elements = [{'key': u'ZB7K535R', 'author': u'Reskin 2003', 'title': u'Including Mechanisms in Our Models of Ascriptive Inequality: 2002 Presidential Address'}, {'key': u'DBTD3HQS', 'author': u'Igor & Ronald 2008', 'title': u'Die Zunahme der Lohnungleichheit in der Bundesrepublik. Aktuelle Befunde f\xfcr den Zeitraum von 1998 bis 2005'}, {'key': u'BKTCNEGP', 'author': u'Kirk & Sampson 2013', 'title': u'Juvenile Arrest and Collateral Educational Damage in the Transition to Adulthood'}, {'key': u'9AN4SPKT', 'author': u'Turner 2003', 'title': u'The Structure of Sociological Theory'}, {'key': u'9M92EV6S', 'author': u'Bruhns et al. 1999', 'title': u'Die heimliche Revolution'}, {'key': u'25QBTM5P', 'author': u'Durkheim 1997', 'title': u'The Division of Labor in Society'}, {'key': u'MQ3BHTBJ', 'author': u'Marx 1978', 'title': u'Alienation and Social Class'}, {'key': u'7G4BRU45', 'author': u'Marx 1978', 'title': u'The German Ideology: Part I'}, {'key': u'9ANAZXQB', 'author': u'Llorente 2006', 'title': u'Analytical Marxism and the Division of Labor'}]
+    query = 'marx'
+    results = fuzzy_search(query, elements, key=lambda x: '%s - %s' % (x['author'], x['title']))
+
+As you can see, the `key` access function should extract a searchable string from your data set, and the `elements` argument should be a list that eventually contains strings. The neat thing about this being a _fuzzy_ search is that `mrx` would also match many of the Marx elements, and if a mistyped or fragmented query is closer to one good candidate (say "Max") than another (like "Marx"), results will be ranked accordingly.
 
 
 ## Notifications
