@@ -27,7 +27,8 @@ class Mail(object):
 
     def notify(self):
         server = smtplib.SMTP_SSL(self.host, self.port) if self.SSL else smtplib.SMTP(self.host, self.port)
-        server.login(self.user, self.pw)
+        if not self.user == None and not self.pw == None:
+            server.login(self.user, self.pw)
 
         def sendMessage(to):
             body = self.body
