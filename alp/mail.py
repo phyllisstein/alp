@@ -29,6 +29,9 @@ class Mail(object):
         server = smtplib.SMTP_SSL(self.host, self.port) if self.SSL else smtplib.SMTP(self.host, self.port)
         if not self.user == None and not self.pw == None:
             server.login(self.user, self.pw)
+        if 'gmail' in self.host:
+            server.ehlo()
+            server.starttls()
 
         def sendMessage(to):
             body = self.body
