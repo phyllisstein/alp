@@ -45,7 +45,10 @@ class Keychain(object):
             )
 
         intendedLen = pwLen.contents.value
-        return pwData.contents.value[0:intendedLen]
+        if pwData.contents.value != None:
+            return pwData.contents.value[0:intendedLen]
+        else:
+            return None
 
     def modifyPassword(self, account, newPassword):
         acctLen = c_ulong(len(account))
