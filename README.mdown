@@ -50,7 +50,7 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
     + `icon`: A path to an icon image, a path to a file, or a file type (default: `icon.png`).
     + `fileIcon`: If you wish to use a particular file's icon, set `icon` to its path and `fileIcon` to `True`.
     + `fileType`: If you wish to specify a type of file whose icon Alfred should use, set `icon` to the type and `fileType` to `True`.
-    + `arg`: The argument to be passed as `{query}` if the item is valid and actioned.
+    + `arg`: The argument to be passed as `{query}` if the item is valid and actioned. If it contains newlines, it will be passed as a separate XML key rather than an attribute of `<item></item>`.
     + `type`: Currently, can only be set to `file`, which tells Alfred to treat the result as a file.
 
     A nifty trick is to pass a dictionary with some or all of `alp.Item`'s keys and values into the initializer. So you could conceivably do this:
@@ -82,7 +82,7 @@ alp uses a robust and complete implementation of Alfred's feedback system, gener
             }
         }
 
-    If `autocomplete`, `arg`, or `type` is set, that value will be added to the `"attrib"` dictionary.
+    If `autocomplete` or `type` is set, that value will be added to the `"attrib"` dictionary, as will an `arg` that does not contain newlines.
 * `alp.feedback(items)`  
     Takes either an individual item or a list of items for `items` and prints a UTF-8-encoded XML string for Alfred to interpret.
 
