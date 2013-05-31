@@ -46,9 +46,9 @@ class Item(object):
             attrib["autocomplete"] = self.autocomplete
         if self.arg:
             if "\n" in self.arg:
-                content["arg"] = arg
+                content["arg"] = self.arg
             else:
-                attrib["arg"] = arg
+                attrib["arg"] = self.arg
         if self.type:
             attrib["type"] = self.type
 
