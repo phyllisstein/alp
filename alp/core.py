@@ -8,8 +8,8 @@ import sys
 import plistlib
 import unicodedata
 import codecs
-from .core_dependencies import six
-from .core_dependencies import biplist
+import six
+import biplist
 
 
 gBundleID = None
