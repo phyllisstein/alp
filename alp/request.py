@@ -1,5 +1,5 @@
 import alp.core as core
-from bs4 import BeautifulSoup
+import BeautifulSoup
 import requests
 import requests_cache
 
