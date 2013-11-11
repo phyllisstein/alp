@@ -15,6 +15,13 @@ alp's primary features include:
 
 To get started, simply download or clone this repository and copy the `alp` folder into your workflow directory, then `import alp`. A list of everything alp can do, with appropriate documentation, is below.
 
+## Installation
+
+Install Alp with PIP:
+
+    pip install https://github.com/phyllisstein/alp/tarball/master
+
+
 ## Core Functions
 These are intended to make some basic rote tasks easier and faster to code. alp defines the following functions:
 
