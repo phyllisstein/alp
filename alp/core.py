@@ -21,7 +21,19 @@ def bundle():
     if gBundleID is not None:
         return gBundleID
 
-    gBundleID = os.environ['alfred_workflow_bundleid']
+    gBundleID = os.environ.get('alfred_workflow_bundleid')
+
+    if gBundleID is None:
+        infoPath = os.path.abspath("./info.plist")
+        if os.path.exists(infoPath):
+            info = plistlib.readPlist(infoPath)
+            try:
+                gBundleID = info["bundleid"]
+            except KeyError:
+                raise Exception("Bundle ID not defined or readable from info.plist.")
+        else:
+            raise Exception("info.plist missing.")
+
     return gBundleID
 
 
@@ -47,7 +59,8 @@ def local(join=None):
 
 
 def cache(join=None):
-    vPath = os.environ['alfred_workflow_cache']
+    bundleID = bundle()
+    vPath = os.environ.get('alfred_workflow_cache', os.path.expanduser(os.path.join("~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/", bundleID)))
 
     if not os.path.exists(vPath):
         os.makedirs(vPath)
@@ -59,7 +72,8 @@ def cache(join=None):
 
 
 def storage(join=None):
-    nvPath = os.environ['alfred_workflow_data']
+    bundleID = bundle()
+    nvPath = os.environ.get('alfred_workflow_data', os.path.expanduser(os.path.join("~/Library/Application Support/Alfred 2/Workflow Data/", bundleID)))
 
     if not os.path.exists(nvPath):
         os.makedirs(nvPath)
@@ -74,7 +88,7 @@ def readPlist(path):
     # With thanks to https://github.com/congalong for solving the biplist problem
     if not os.path.isabs(path):
         path = storage(path)
-    
+
     if not isinstance(path, six.binary_type):
         with codecs.open(path, "r", "utf-8") as f:
             s = f.read()
@@ -86,7 +100,7 @@ def readPlist(path):
 def writePlist(obj, path):
     if not os.path.isabs(path):
         path = storage(path)
-    
+
     s = plistlib.writePlistToString(obj)
     with codecs.open(path, "w", "utf-8") as f:
         f.write(s)
