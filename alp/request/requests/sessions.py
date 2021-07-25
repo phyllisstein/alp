@@ -164,7 +164,7 @@ class SessionRedirectMixin(object):
 class Session(SessionRedirectMixin):
     """A Requests session.
 
-    Provides cookie persistience, connection-pooling, and configuration.
+    Provides cookie persistence, connection-pooling, and configuration.
 
     Basic Usage::
 
@@ -474,7 +474,7 @@ class Session(SessionRedirectMixin):
         return r
 
     def get_adapter(self, url):
-        """Returns the appropriate connnection adapter for the given URL."""
+        """Returns the appropriate connection adapter for the given URL."""
         for (prefix, adapter) in self.adapters.items():
 
             if url.startswith(prefix):

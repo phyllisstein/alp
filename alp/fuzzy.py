@@ -137,7 +137,7 @@ def fuzzy_search(query, elements, key=lambda x: x, rank=True, seq=3):
     Returns:
         a ranked list of elements that matches the query
 
-    Fuzzy matching with rankning based on quality of match with two criteria
+    Fuzzy matching with ranking based on quality of match with two criteria
     (a) sequence of characters (e.g. for query 'nor', 'nor' is better then 'nxoxr')
     (b) earlier matches are better (e.g. for query 'nor', 'nor' is better then 'xnor')
     """

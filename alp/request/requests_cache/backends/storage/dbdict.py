@@ -49,7 +49,7 @@ class DbDict(MutableMapping):
         self.table_name = table_name
         self.fast_save = fast_save
         
-        #: Transactions can be commited if this property is set to `True`
+        #: Transactions can be committed if this property is set to `True`
         self.can_commit = True
 
         
