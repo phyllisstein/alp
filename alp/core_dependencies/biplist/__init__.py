@@ -670,7 +670,7 @@ class PlistWriter(object):
         writtenReferences = list(self.writtenReferences.items())
         writtenReferences.sort(key=lambda x: x[1])
         for obj,order in writtenReferences:
-            # Porting note: Elsewhere we deliberately replace empty unicdoe strings
+            # Porting note: Elsewhere we deliberately replace empty unicode strings
             # with empty binary strings, but the empty unicode string
             # goes into writtenReferences.  This isn't an issue in Py2
             # because u'' and b'' have the same hash; but it is in
